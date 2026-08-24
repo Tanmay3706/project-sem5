@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>StockDrive - Reports</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #333;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: #123456;
+            color: white;
+            padding: 25px 15px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .logo h2 {
+            font-size: 23px;
+        }
+
+        .logo p {
+            font-size: 12px;
+            color: #cbd8e5;
+            margin-top: 5px;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            margin-bottom: 10px;
+        }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: white;
+            padding: 13px 15px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #1f4e79;
+        }
+
+        .logout {
+            position: absolute;
+            bottom: 25px;
+            left: 15px;
+            right: 15px;
+        }
+
+        .logout a {
+            background: #c0392b;
+        }
+
+        .logout a:hover {
+            background: #e74c3c;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            margin-left: 250px;
+            min-height: 100vh;
+        }
+
+        /* ================= TOPBAR ================= */
+
+        .topbar {
+            height: 75px;
+            background: white;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 0 30px;
+
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .topbar h2 {
+            color: #123456;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+
+            border-radius: 50%;
+
+            background: #1f4e79;
+            color: white;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-weight: 600;
+        }
+
+        /* ================= CONTENT ================= */
+
+        .content {
+            padding: 30px;
+        }
+
+        .page-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 25px;
+        }
+
+        .page-title h1 {
+            font-size: 28px;
+            color: #123456;
+        }
+
+        .page-title p {
+            color: #777;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .print-btn {
+            background: #1f4e79;
+            color: white;
+
+            border: none;
+            border-radius: 8px;
+
+            padding: 12px 18px;
+
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .print-btn:hover {
+            background: #0b6e99;
+        }
+
+        /* ================= REPORT CARDS ================= */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 20px;
+
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-icon {
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            color: #777;
+            font-size: 13px;
+        }
+
+        .card h2 {
+            color: #123456;
+            font-size: 25px;
+            margin-top: 5px;
+        }
+
+        /* ================= FILTER ================= */
+
+        .panel {
+            background: white;
+
+            border-radius: 12px;
+
+            padding: 22px;
+
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+
+            margin-bottom: 25px;
+        }
+
+        .filter-title {
+            color: #123456;
+
+            font-size: 18px;
+
+            margin-bottom: 18px;
+        }
+
+        .filters {
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 15px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-size: 13px;
+
+            margin-bottom: 6px;
+
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 11px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 7px;
+
+            font-size: 13px;
+        }
+
+        .generate-btn {
+            margin-top: 20px;
+
+            background: #1f4e79;
+
+            color: white;
+
+            border: none;
+
+            padding: 11px 20px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+        }
+
+        .generate-btn:hover {
+            background: #0b6e99;
+        }
+
+        /* ================= REPORT HEADER ================= */
+
+        .report-header {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 20px;
+        }
+
+        .report-header h2 {
+            color: #123456;
+        }
+
+        .report-header span {
+            color: #777;
+
+            font-size: 13px;
+        }
+
+        /* ================= TABLE ================= */
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 13px;
+
+            text-align: left;
+
+            border-bottom: 1px solid #eee;
+
+            font-size: 13px;
+        }
+
+        th {
+            background: #f8fafc;
+
+            color: #555;
+
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #fafcff;
+        }
+
+        /* ================= STATUS ================= */
+
+        .status {
+            padding: 5px 10px;
+
+            border-radius: 15px;
+
+            font-size: 11px;
+        }
+
+        .completed {
+            background: #d4edda;
+
+            color: #26733b;
+        }
+
+        .pending {
+            background: #fff3cd;
+
+            color: #856404;
+        }
+
+        .approved {
+            background: #d1ecf1;
+
+            color: #0c5460;
+        }
+
+        .critical {
+            background: #f8d7da;
+
+            color: #842029;
+        }
+
+        /* ================= EMPTY ================= */
+
+        .empty {
+            text-align: center;
+
+            padding: 35px;
+
+            color: #777;
+
+            display: none;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media(max-width: 1100px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filters {
+                grid-template-columns: 1fr 1fr;
+            }
+
+        }
+
+        @media(max-width: 700px) {
+
+            .sidebar {
+                width: 200px;
+            }
+
+            .main {
+                margin-left: 200px;
+            }
+
+            .content {
+                padding: 18px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 12px;
+            }
+
+            table {
+                min-width: 750px;
+            }
+
+            .panel {
+                overflow-x: auto;
+            }
+
+        }
+
+        /* ================= PRINT ================= */
+
+        @media print {
+
+            .sidebar,
+            .topbar,
+            .print-btn,
+            .filters,
+            .generate-btn {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            body {
+                background: white;
+            }
+
+            .panel {
+                box-shadow: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <div class="sidebar">
+
+        <div class="logo">
+
+            <h2>StockDrive</h2>
+
+            <p>Inventory & Supplier Management</p>
+
+        </div>
+
+        <ul class="menu">
+
+            <li>
+                <a href="dashboard.html">
+                    🏠 Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="inventory.html">
+                    📦 Inventory
+                </a>
+            </li>
+
+            <li>
+                <a href="supplier.html">
+                    🚚 Suppliers
+                </a>
+            </li>
+
+            <li>
+                <a href="purchase-orders.html">
+                    🛒 Purchase Orders
+                </a>
+            </li>
+
+            <li>
+                <a href="stock-alerts.html">
+                    ⚠️ Stock Alerts
+                </a>
+            </li>
+
+            <li>
+                <a href="reports.html" class="active">
+                    📊 Reports
+                </a>
+            </li>
+
+            <li>
+                <a href="admin.html">
+                    👥 Users
+                </a>
+            </li>
+
+        </ul>
+
+        <div class="logout">
+
+            <a href="index.html">
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <div class="main">
+
+        <!-- TOPBAR -->
+
+        <div class="topbar">
+
+            <h2>Reports</h2>
+
+            <div class="profile">
+
+                <div class="profile-icon">
+                    A
+                </div>
+
+                <span id="username">
+                    Admin
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= CONTENT ================= -->
+
+        <div class="content">
+
+            <!-- PAGE TITLE -->
+
+            <div class="page-title">
+
+                <div>
+
+                    <h1>Reports</h1>
+
+                    <p>
+                        View inventory, supplier, purchase and stock reports.
+                    </p>
+
+                </div>
+
+                <button
+                    class="print-btn"
+                    onclick="printReport()">
+
+                    🖨 Print Report
+
+                </button>
+
+            </div>
+
+
+            <!-- ================= SUMMARY CARDS ================= -->
+
+            <div class="cards">
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        📦
+                    </div>
+
+                    <div class="card-title">
+                        Total Products
+                    </div>
+
+                    <h2 id="totalProducts">
+                        0
+                    </h2>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        🚚
+                    </div>
+
+                    <div class="card-title">
+                        Total Suppliers
+                    </div>
+
+                    <h2 id="totalSuppliers">
+                        0
+                    </h2>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        🛒
+                    </div>
+
+                    <div class="card-title">
+                        Purchase Orders
+                    </div>
+
+                    <h2 id="totalOrders">
+                        0
+                    </h2>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-icon">
+                        ⚠️
+                    </div>
+
+                    <div class="card-title">
+                        Stock Alerts
+                    </div>
+
+                    <h2 id="totalAlerts">
+                        0
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= FILTER ================= -->
+
+            <div class="panel">
+
+                <h2 class="filter-title">
+                    Generate Report
+                </h2>
+
+                <div class="filters">
+
+                    <div class="filter-group">
+
+                        <label>
+                            Report Type
+                        </label>
+
+                        <select id="reportType">
+
+                            <option value="inventory">
+                                Inventory Report
+                            </option>
+
+                            <option value="suppliers">
+                                Supplier Report
+                            </option>
+
+                            <option value="orders">
+                                Purchase Order Report
+                            </option>
+
+                            <option value="alerts">
+                                Stock Alert Report
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            From Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="fromDate">
+
+                    </div>
+
+
+                    <div class="filter-group">
+
+                        <label>
+                            To Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="toDate">
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="generate-btn"
+                    onclick="generateReport()">
+
+                    Generate Report
+
+                </button>
+
+            </div>
+
+
+            <!-- ================= REPORT ================= -->
+
+            <div class="panel">
+
+                <div class="report-header">
+
+                    <div>
+
+                        <h2 id="reportTitle">
+                            Inventory Report
+                        </h2>
+
+                        <span id="reportDate">
+                            Generated on today
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <table>
+
+                    <thead id="tableHead">
+
+                    </thead>
+
+                    <tbody id="reportTable">
+
+                    </tbody>
+
+                </table>
+
+
+                <div
+                    class="empty"
+                    id="empty">
+
+                    No records found for the selected report.
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        /* ================= SAMPLE DATA ================= */
+
+        const inventory = [
+
+            {
+                id: 1,
+                name: "Brake Pad",
+                category: "Brake System",
+                stock: 5,
+                price: 750
+            },
+
+            {
+                id: 2,
+                name: "Oil Filter",
+                category: "Engine Parts",
+                stock: 8,
+                price: 250
+            },
+
+            {
+                id: 3,
+                name: "Air Filter",
+                category: "Engine Parts",
+                stock: 18,
+                price: 320
+            },
+
+            {
+                id: 4,
+                name: "Clutch Plate",
+                category: "Transmission",
+                stock: 3,
+                price: 4500
+            },
+
+            {
+                id: 5,
+                name: "Headlight",
+                category: "Electrical",
+                stock: 22,
+                price: 1200
+            },
+
+            {
+                id: 6,
+                name: "Spark Plug",
+                category: "Engine Parts",
+                stock: 50,
+                price: 180
+            }
+
+        ];
+
+
+        const suppliers = [
+
+            {
+                id: 1,
+                name: "ABC Auto Parts",
+                phone: "9876543210",
+                city: "Pune",
+                products: 25
+            },
+
+            {
+                id: 2,
+                name: "XYZ Motors",
+                phone: "9876501234",
+                city: "Mumbai",
+                products: 18
+            },
+
+            {
+                id: 3,
+                name: "Auto Parts India",
+                phone: "9865432101",
+                city: "Nashik",
+                products: 32
+            },
+
+            {
+                id: 4,
+                name: "Premium Car Parts",
+                phone: "9856321470",
+                city: "Pune",
+                products: 20
+            }
+
+        ];
+
+
+        const orders = [
+
+            {
+                id: 1,
+                supplier: "ABC Auto Parts",
+                date: "2026-08-18",
+                product: "Brake Pad",
+                quantity: 50,
+                amount: 37500,
+                status: "Completed"
+            },
+
+            {
+                id: 2,
+                supplier: "XYZ Motors",
+                date: "2026-08-17",
+                product: "Oil Filter",
+                quantity: 100,
+                amount: 25000,
+                status: "Pending"
+            },
+
+            {
+                id: 3,
+                supplier: "Auto Parts India",
+                date: "2026-08-16",
+                product: "Air Filter",
+                quantity: 75,
+                amount: 24000,
+                status: "Approved"
+            },
+
+            {
+                id: 4,
+                supplier: "Premium Car Parts",
+                date: "2026-08-15",
+                product: "Headlight",
+                quantity: 20,
+                amount: 24000,
+                status: "Pending"
+            }
+
+        ];
+
+
+        /* ================= STOCK ALERTS ================= */
+
+        const alerts = inventory.filter(function(product) {
+
+            return product.stock < 25;
+
+        });
+
+
+        /* ================= SUMMARY ================= */
+
+        document.getElementById("totalProducts")
+            .innerText = inventory.length;
+
+
+        document.getElementById("totalSuppliers")
+            .innerText = suppliers.length;
+
+
+        document.getElementById("totalOrders")
+            .innerText = orders.length;
+
+
+        document.getElementById("totalAlerts")
+            .innerText = alerts.length;
+
+
+        /* ================= GENERATE REPORT ================= */
+
+        function generateReport() {
+
+            const type =
+                document.getElementById("reportType").value;
+
+
+            const fromDate =
+                document.getElementById("fromDate").value;
+
+
+            const toDate =
+                document.getElementById("toDate").value;
+
+
+            if (type === "inventory") {
+
+                generateInventoryReport();
+
+            }
+
+            else if (type === "suppliers") {
+
+                generateSupplierReport();
+
+            }
+
+            else if (type === "orders") {
+
+                generateOrderReport(fromDate, toDate);
+
+            }
+
+            else if (type === "alerts") {
+
+                generateAlertReport();
+
+            }
+
+
+            document.getElementById("reportDate")
+                .innerText =
+                "Generated on " +
+                new Date().toLocaleDateString("en-IN");
+
+        }
+
+
+        /* ================= INVENTORY REPORT ================= */
+
+        function generateInventoryReport() {
+
+            document.getElementById("reportTitle")
+                .innerText =
+                "Inventory Report";
+
+
+            document.getElementById("tableHead")
+                .innerHTML = `
+
+                    <tr>
+
+                        <th>Product ID</th>
+
+                        <th>Product Name</th>
+
+                        <th>Category</th>
+
+                        <th>Stock</th>
+
+                        <th>Price</th>
+
+                        <th>Stock Value</th>
+
+                    </tr>
+
+                `;
+
+
+            const table =
+                document.getElementById("reportTable");
+
+
+            table.innerHTML = "";
+
+
+            inventory.forEach(function(product) {
+
+                const stockValue =
+                    product.stock *
+                    product.price;
+
+
+                table.innerHTML += `
+
+                    <tr>
+
+                        <td>
+                            P${String(product.id).padStart(3, "0")}
+                        </td>
+
+                        <td>
+                            ${product.name}
+                        </td>
+
+                        <td>
+                            ${product.category}
+                        </td>
+
+                        <td>
+                            ${product.stock}
+                        </td>
+
+                        <td>
+                            ₹${product.price.toLocaleString("en-IN")}
+                        </td>
+
+                        <td>
+                            ₹${stockValue.toLocaleString("en-IN")}
+                        </td>
+
+                    </tr>
+
+                `;
+
+            });
+
+        }
+
+
+        /* ================= SUPPLIER REPORT ================= */
+
+        function generateSupplierReport() {
+
+            document.getElementById("reportTitle")
+                .innerText =
+                "Supplier Report";
+
+
+            document.getElementById("tableHead")
+                .innerHTML = `
+
+                    <tr>
+
+                        <th>Supplier ID</th>
+
+                        <th>Supplier Name</th>
+
+                        <th>Phone</th>
+
+                        <th>City</th>
+
+                        <th>Products Supplied</th>
+
+                    </tr>
+
+                `;
+
+
+            const table =
+                document.getElementById("reportTable");
+
+
+            table.innerHTML = "";
+
+
+            suppliers.forEach(function(supplier) {
+
+                table.innerHTML += `
+
+                    <tr>
+
+                        <td>
+                            S${String(supplier.id).padStart(3, "0")}
+                        </td>
+
+                        <td>
+                            ${supplier.name}
+                        </td>
+
+                        <td>
+                            ${supplier.phone}
+                        </td>
+
+                        <td>
+                            ${supplier.city}
+                        </td>
+
+                        <td>
+                            ${supplier.products}
+                        </td>
+
+                    </tr>
+
+                `;
+
+            });
+
+        }
+
+
+        /* ================= ORDER REPORT ================= */
+
+        function generateOrderReport(fromDate, toDate) {
+
+            document.getElementById("reportTitle")
+                .innerText =
+                "Purchase Order Report";
+
+
+            document.getElementById("tableHead")
+                .innerHTML = `
+
+                    <tr>
+
+                        <th>Order ID</th>
+
+                        <th>Supplier</th>
+
+                        <th>Date</th>
+
+                        <th>Product</th>
+
+                        <th>Quantity</th>
+
+                        <th>Amount</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                `;
+
+
+            let filtered =
+                orders;
+
+
+            if (fromDate) {
+
+                filtered =
+                    filtered.filter(function(order) {
+
+                        return order.date >= fromDate;
+
+                    });
+
+            }
+
+
+            if (toDate) {
+
+                filtered =
+                    filtered.filter(function(order) {
+
+                        return order.date <= toDate;
+
+                    });
+
+            }
+
+
+            const table =
+                document.getElementById("reportTable");
+
+
+            table.innerHTML = "";
+
+
+            filtered.forEach(function(order) {
+
+                let statusClass =
+                    "pending";
+
+
+                if (order.status === "Completed") {
+
+                    statusClass =
+                        "completed";
+
+                }
+
+
+                if (order.status === "Approved") {
+
+                    statusClass =
+                        "approved";
+
+                }
+
+
+                table.innerHTML += `
+
+                    <tr>
+
+                        <td>
+                            PO${String(order.id).padStart(3, "0")}
+                        </td>
+
+                        <td>
+                            ${order.supplier}
+                        </td>
+
+                        <td>
+                            ${formatDate(order.date)}
+                        </td>
+
+                        <td>
+                            ${order.product}
+                        </td>
+
+                        <td>
+                            ${order.quantity}
+                        </td>
+
+                        <td>
+                            ₹${order.amount.toLocaleString("en-IN")}
+                        </td>
+
+                        <td>
+
+                            <span class="status ${statusClass}">
+                                ${order.status}
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            });
+
+        }
+
+
+        /* ================= STOCK ALERT REPORT ================= */
+
+        function generateAlertReport() {
+
+            document.getElementById("reportTitle")
+                .innerText =
+                "Stock Alert Report";
+
+
+            document.getElementById("tableHead")
+                .innerHTML = `
+
+                    <tr>
+
+                        <th>Product ID</th>
+
+                        <th>Product Name</th>
+
+                        <th>Category</th>
+
+                        <th>Current Stock</th>
+
+                        <th>Required Level</th>
+
+                        <th>Alert</th>
+
+                    </tr>
+
+                `;
+
+
+            const table =
+                document.getElementById("reportTable");
+
+
+            table.innerHTML = "";
+
+
+            alerts.forEach(function(product) {
+
+                let alertType =
+                    product.stock <= 10
+                        ? "Critical"
+                        : "Low";
+
+
+                table.innerHTML += `
+
+                    <tr>
+
+                        <td>
+                            P${String(product.id).padStart(3, "0")}
+                        </td>
+
+                        <td>
+                            ${product.name}
+                        </td>
+
+                        <td>
+                            ${product.category}
+                        </td>
+
+                        <td>
+                            ${product.stock}
+                        </td>
+
+                        <td>
+                            25
+                        </td>
+
+                        <td>
+
+                            <span class="status critical">
+                                ${alertType}
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            });
+
+        }
+
+
+        /* ================= DATE FORMAT ================= */
+
+        function formatDate(date) {
+
+            const d =
+                new Date(date);
+
+
+            return d.toLocaleDateString(
+                "en-IN",
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                }
+            );
+
+        }
+
+
+        /* ================= PRINT ================= */
+
+        function printReport() {
+
+            window.print();
+
+        }
+
+
+        /* ================= USERNAME ================= */
+
+        const savedUser =
+            localStorage.getItem("username");
+
+
+        if (savedUser) {
+
+            document.getElementById("username")
+                .innerText =
+                savedUser;
+
+        }
+
+
+        /* ================= INITIAL REPORT ================= */
+
+        generateInventoryReport();
+
+    </script>
+
+</body>
+
+</html>
