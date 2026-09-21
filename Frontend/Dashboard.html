@@ -410,12 +410,9 @@
 
             <div class="welcome">
 
-                <h1>Welcome to Automobile ERP</h1>
+                <h1>Welcome to StockDrive</h1>
 
-                <p>
-                    Manage your automobile inventory, suppliers and purchase orders from one place.
-                </p>
-
+                
             </div>
 
 
@@ -452,9 +449,7 @@
                         Total Suppliers
                     </div>
 
-                    <h2 id="totalSuppliers">
-                        25
-                    </h2>
+                    <h2 id="totalSuppliers"> 4</h2>
 
                     <div class="card-info">
                         Registered suppliers
@@ -474,7 +469,7 @@
                     </div>
 
                     <h2 id="lowStock">
-                        8
+                        0                        
                     </h2>
 
                     <div class="card-info">
@@ -670,6 +665,33 @@
         }
 
     </script>
+   <script>
+async function loadDashboardData() {
+    try {
+        const response = await fetch("http://localhost:8080/api/dashboard");
+
+        if (!response.ok) {
+            throw new Error("Failed to load dashboard data");
+        }
+
+        const data = await response.json();
+
+        document.getElementById("totalProducts").textContent =
+            data.totalProducts;
+
+        document.getElementById("totalSuppliers").textContent =
+            data.totalSuppliers;
+
+        document.getElementById("lowStockProducts").textContent =
+            data.lowStockProducts;
+
+    } catch (error) {
+        console.error("Dashboard error:", error);
+    }
+}
+
+loadDashboardData();
+</script>
 
 </body>
 

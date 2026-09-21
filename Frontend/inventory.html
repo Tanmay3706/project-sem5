@@ -2,17 +2,14 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>StockDrive - Inventory</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
     <style>
-
         * {
             margin: 0;
             padding: 0;
@@ -90,14 +87,12 @@
             background: #e74c3c;
         }
 
-
         /* ================= MAIN ================= */
 
         .main {
             margin-left: 250px;
             min-height: 100vh;
         }
-
 
         /* ================= TOPBAR ================= */
 
@@ -133,7 +128,6 @@
             font-weight: 600;
         }
 
-
         /* ================= CONTENT ================= */
 
         .content {
@@ -157,8 +151,7 @@
             margin-top: 5px;
         }
 
-
-        /* ================= ADD BUTTON ================= */
+        /* ================= BUTTON ================= */
 
         .add-btn {
             background: #1f4e79;
@@ -175,7 +168,6 @@
             background: #0b6e99;
             transform: translateY(-2px);
         }
-
 
         /* ================= STATISTICS ================= */
 
@@ -209,8 +201,7 @@
             margin-top: 5px;
         }
 
-
-        /* ================= FILTER SECTION ================= */
+        /* ================= FILTER ================= */
 
         .filter-box {
             background: white;
@@ -240,7 +231,6 @@
             outline: none;
             border-color: #1f4e79;
         }
-
 
         /* ================= TABLE ================= */
 
@@ -287,7 +277,6 @@
             background: #f9fbfd;
         }
 
-
         /* ================= STATUS ================= */
 
         .status {
@@ -312,8 +301,7 @@
             color: #842029;
         }
 
-
-        /* ================= ACTION BUTTONS ================= */
+        /* ================= ACTIONS ================= */
 
         .edit-btn {
             background: #1f4e79;
@@ -341,7 +329,6 @@
         .delete-btn:hover {
             background: #e74c3c;
         }
-
 
         /* ================= MODAL ================= */
 
@@ -389,7 +376,6 @@
         .close:hover {
             color: #c0392b;
         }
-
 
         /* ================= FORM ================= */
 
@@ -463,11 +449,29 @@
             background: #0b6e99;
         }
 
+        /* ================= MESSAGE ================= */
+
+        .message {
+            display: none;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #26733b;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #842029;
+        }
 
         /* ================= RESPONSIVE ================= */
 
         @media(max-width:1100px) {
-
             .cards {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -475,11 +479,9 @@
             .filter-container {
                 grid-template-columns: 1fr;
             }
-
         }
 
         @media(max-width:700px) {
-
             .sidebar {
                 width: 200px;
             }
@@ -505,33 +507,25 @@
             .form-group.full {
                 grid-column: 1;
             }
-
         }
-
     </style>
-
 </head>
 
-
 <body>
-
 
     <!-- ================= SIDEBAR ================= -->
 
     <div class="sidebar">
 
         <div class="logo">
-
             <h2>StockDrive</h2>
-
-
+            <p>Inventory Management System</p>
         </div>
-
 
         <ul class="menu">
 
             <li>
-                <a href="dashboard.html">
+                <a href="Dashboard.html">
                     🏠 Dashboard
                 </a>
             </li>
@@ -574,22 +568,17 @@
 
         </ul>
 
-
         <div class="logout">
-
-            <a href="index.html">
+            <a href="Login.html" onclick="logout()">
                 🚪 Logout
             </a>
-
         </div>
 
     </div>
 
-
     <!-- ================= MAIN ================= -->
 
     <div class="main">
-
 
         <!-- TOPBAR -->
 
@@ -611,104 +600,56 @@
 
         </div>
 
-
         <!-- ================= CONTENT ================= -->
 
         <div class="content">
 
+            <div id="message" class="message"></div>
 
             <!-- PAGE HEADER -->
 
             <div class="page-header">
-                <div>
 
+                <div>
                     <h1>Inventory</h1>
                     <p>Manage automobile spare parts and product stock.</p>
                 </div>
 
                 <button class="add-btn" onclick="openAddModal()">
-
                     + Add New Product
-
                 </button>
 
             </div>
-
 
             <!-- ================= STATISTICS ================= -->
 
             <div class="cards">
 
-
                 <div class="card">
-
-                    <div class="card-icon">
-                        📦
-                    </div>
-
-                    <div class="card-title">
-                        Total Products
-                    </div>
-
-                    <h2 id="totalProducts">
-                        0
-                    </h2>
-
+                    <div class="card-icon">📦</div>
+                    <div class="card-title">Total Products</div>
+                    <h2 id="totalProducts">0</h2>
                 </div>
 
-
                 <div class="card">
-
-                    <div class="card-icon">
-                        🟢
-                    </div>
-
-                    <div class="card-title">
-                        In Stock
-                    </div>
-
-                    <h2 id="inStock">
-                        0
-                    </h2>
-
+                    <div class="card-icon">🟢</div>
+                    <div class="card-title">In Stock</div>
+                    <h2 id="inStock">0</h2>
                 </div>
 
-
                 <div class="card">
-
-                    <div class="card-icon">
-                        ⚠️
-                    </div>
-
-                    <div class="card-title">
-                        Low Stock
-                    </div>
-
-                    <h2 id="lowStock">
-                        0
-                    </h2>
-
+                    <div class="card-icon">⚠️</div>
+                    <div class="card-title">Low Stock</div>
+                    <h2 id="lowStock">0</h2>
                 </div>
 
-
                 <div class="card">
-
-                    <div class="card-icon">
-                        🔴
-                    </div>
-
-                    <div class="card-title">
-                        Out of Stock
-                    </div>
-
-                    <h2 id="outStock">
-                        0
-                    </h2>
-
+                    <div class="card-icon">🔴</div>
+                    <div class="card-title">Out of Stock</div>
+                    <h2 id="outStock">0</h2>
                 </div>
 
             </div>
-
 
             <!-- ================= FILTERS ================= -->
 
@@ -716,17 +657,13 @@
 
                 <div class="filter-container">
 
-
                     <input
                         type="text"
                         id="searchInput"
                         class="search-box"
                         placeholder="🔍 Search by product, brand or part number...">
 
-
-                    <select
-                        id="categoryFilter"
-                        class="filter-select">
+                    <select id="categoryFilter" class="filter-select">
 
                         <option value="all">
                             All Categories
@@ -754,10 +691,7 @@
 
                     </select>
 
-
-                    <select
-                        id="stockFilter"
-                        class="filter-select">
+                    <select id="stockFilter" class="filter-select">
 
                         <option value="all">
                             All Stock Status
@@ -781,7 +715,6 @@
 
             </div>
 
-
             <!-- ================= TABLE ================= -->
 
             <div class="table-container">
@@ -798,57 +731,40 @@
 
                 </div>
 
-
                 <table>
 
                     <thead>
 
                         <tr>
-
                             <th>Product ID</th>
-
                             <th>Product Name</th>
-
                             <th>Category</th>
-
                             <th>Brand</th>
-
                             <th>Part Number</th>
-
                             <th>Selling Price</th>
-
                             <th>Quantity</th>
-
                             <th>Status</th>
-
                             <th>Action</th>
-
                         </tr>
 
                     </thead>
 
-
                     <tbody id="inventoryTable">
-
                     </tbody>
 
                 </table>
 
             </div>
 
-
         </div>
 
     </div>
-
 
     <!-- ================= ADD/EDIT MODAL ================= -->
 
     <div class="modal" id="productModal">
 
-
         <div class="modal-content">
-
 
             <div class="modal-header">
 
@@ -862,12 +778,9 @@
 
             </div>
 
-
             <form id="productForm">
 
-
                 <div class="form-grid">
-
 
                     <div class="form-group">
 
@@ -882,7 +795,6 @@
                             placeholder="Enter product name">
 
                     </div>
-
 
                     <div class="form-group">
 
@@ -920,21 +832,18 @@
 
                     </div>
 
-
                     <div class="form-group">
 
                         <label>
-                            Brand *
+                            Brand
                         </label>
 
                         <input
                             type="text"
                             id="brand"
-                            required
                             placeholder="Enter brand">
 
                     </div>
-
 
                     <div class="form-group">
 
@@ -950,7 +859,6 @@
 
                     </div>
 
-
                     <div class="form-group">
 
                         <label>
@@ -961,11 +869,11 @@
                             type="number"
                             id="sellingPrice"
                             min="0"
+                            step="0.01"
                             required
                             placeholder="₹">
 
                     </div>
-
 
                     <div class="form-group">
 
@@ -982,7 +890,6 @@
 
                     </div>
 
-
                     <div class="form-group">
 
                         <label>
@@ -998,6 +905,19 @@
 
                     </div>
 
+                    <div class="form-group">
+
+                        <label>
+                            Supplier ID
+                        </label>
+
+                        <input
+                            type="number"
+                            id="supplierId"
+                            min="1"
+                            placeholder="Optional supplier ID">
+
+                    </div>
 
                     <div class="form-group full">
 
@@ -1007,14 +927,11 @@
 
                         <textarea
                             id="description"
-                            placeholder="Enter product description">
-                        </textarea>
+                            placeholder="Enter product description"></textarea>
 
                     </div>
 
-
                 </div>
-
 
                 <div class="form-buttons">
 
@@ -1027,10 +944,10 @@
 
                     </button>
 
-
                     <button
                         type="submit"
-                        class="save-btn">
+                        class="save-btn"
+                        id="saveButton">
 
                         Save Product
 
@@ -1038,248 +955,181 @@
 
                 </div>
 
-
             </form>
 
         </div>
 
     </div>
 
-
     <!-- ================= JAVASCRIPT ================= -->
 
     <script>
 
+        /* =====================================================
+           STOCKDRIVE INVENTORY BACKEND CONNECTION
+           ===================================================== */
 
-        /* =========================================
-           SAMPLE INVENTORY DATA
-        ========================================= */
+        const API_URL = "http://localhost:8080/api/products";
 
-        let products = JSON.parse(
-            localStorage.getItem("inventoryProducts")
-        ) || [
-
-            {
-                id: "P001",
-                name: "Brake Pad",
-                category: "Brake System",
-                brand: "Bosch",
-                partNumber: "BP101",
-                sellingPrice: 750,
-                quantity: 120,
-                minimumStock: 20,
-                description: "Front brake pad"
-            },
-
-            {
-                id: "P002",
-                name: "Oil Filter",
-                category: "Engine",
-                brand: "Castrol",
-                partNumber: "OF102",
-                sellingPrice: 250,
-                quantity: 8,
-                minimumStock: 15,
-                description: "Premium oil filter"
-            },
-
-            {
-                id: "P003",
-                name: "Air Filter",
-                category: "Engine",
-                brand: "Bosch",
-                partNumber: "AF103",
-                sellingPrice: 320,
-                quantity: 60,
-                minimumStock: 10,
-                description: "Automobile air filter"
-            },
-
-            {
-                id: "P004",
-                name: "Headlight",
-                category: "Electrical",
-                brand: "Philips",
-                partNumber: "HL104",
-                sellingPrice: 1200,
-                quantity: 0,
-                minimumStock: 10,
-                description: "LED automobile headlight"
-            },
-
-            {
-                id: "P005",
-                name: "Clutch Plate",
-                category: "Transmission",
-                brand: "Exedy",
-                partNumber: "CP105",
-                sellingPrice: 3500,
-                quantity: 25,
-                minimumStock: 5,
-                description: "Automobile clutch plate"
-            }
-
-        ];
+        let products = [];
+        let editingProductId = null;
 
 
-        let editIndex = -1;
+        /* =====================================================
+           MESSAGE
+           ===================================================== */
 
+        function showMessage(message, type) {
 
-        /* =========================================
-           SAVE DATA
-        ========================================= */
+            const messageBox = document.getElementById("message");
 
-        function saveProducts() {
+            messageBox.textContent = message;
+            messageBox.className = "message " + type;
+            messageBox.style.display = "block";
 
-            localStorage.setItem(
-                "inventoryProducts",
-                JSON.stringify(products)
-            );
-
+            setTimeout(() => {
+                messageBox.style.display = "none";
+            }, 3500);
         }
 
 
-        /* =========================================
+        /* =====================================================
            GET STOCK STATUS
-        ========================================= */
+           ===================================================== */
 
         function getStatus(product) {
 
-            if (product.quantity === 0) {
+            const quantity = Number(product.quantity);
+            const minimumStock = Number(product.minimumStock);
 
+            if (quantity === 0) {
                 return "Out of Stock";
-
             }
 
-            if (product.quantity <= product.minimumStock) {
-
+            if (quantity <= minimumStock) {
                 return "Low Stock";
-
             }
 
             return "In Stock";
+        }
+
+
+        /* =====================================================
+           LOAD PRODUCTS FROM JAVA BACKEND
+           ===================================================== */
+
+        async function loadProducts() {
+
+            try {
+
+                const response = await fetch(API_URL);
+
+                if (!response.ok) {
+                    throw new Error("Unable to load products");
+                }
+
+                products = await response.json();
+
+                displayProducts();
+
+            } catch (error) {
+
+                console.error("Inventory loading error:", error);
+
+                showMessage(
+                    "Cannot connect to StockDrive backend. Make sure Spring Boot is running.",
+                    "error"
+                );
+
+            }
 
         }
 
 
-        /* =========================================
-           DISPLAY INVENTORY
-        ========================================= */
+        /* =====================================================
+           DISPLAY PRODUCTS
+           ===================================================== */
 
         function displayProducts() {
 
-            const table =
-                document.getElementById("inventoryTable");
+            const table = document.getElementById("inventoryTable");
 
             table.innerHTML = "";
 
-
             const search =
-                document
-                .getElementById("searchInput")
-                .value
-                .toLowerCase();
-
+                document.getElementById("searchInput")
+                    .value
+                    .trim()
+                    .toLowerCase();
 
             const category =
-                document
-                .getElementById("categoryFilter")
-                .value;
-
+                document.getElementById("categoryFilter").value;
 
             const stock =
-                document
-                .getElementById("stockFilter")
-                .value;
+                document.getElementById("stockFilter").value;
 
 
-            let filteredProducts =
-                products.filter(product => {
+            const filteredProducts = products.filter(product => {
+
+                const productName =
+                    (product.productName || "").toLowerCase();
+
+                const brand =
+                    (product.brand || "").toLowerCase();
+
+                const partNumber =
+                    (product.partNumber || "").toLowerCase();
+
+                const matchesSearch =
+                    productName.includes(search) ||
+                    brand.includes(search) ||
+                    partNumber.includes(search);
+
+                const matchesCategory =
+                    category === "all" ||
+                    product.category === category;
+
+                const matchesStock =
+                    stock === "all" ||
+                    getStatus(product) === stock;
+
+                return (
+                    matchesSearch &&
+                    matchesCategory &&
+                    matchesStock
+                );
+
+            });
 
 
-                    const matchesSearch =
+            if (filteredProducts.length === 0) {
 
-                        product.name
-                        .toLowerCase()
-                        .includes(search)
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="text-align:center;padding:30px;">
+                            No products found
+                        </td>
+                    </tr>
+                `;
 
-                        ||
+            } else {
 
-                        product.brand
-                        .toLowerCase()
-                        .includes(search)
+                filteredProducts.forEach(product => {
 
-                        ||
+                    const status = getStatus(product);
 
-                        product.partNumber
-                        .toLowerCase()
-                        .includes(search);
+                    let statusClass = "in-stock";
 
-
-                    const matchesCategory =
-
-                        category === "all"
-
-                        ||
-
-                        product.category === category;
-
-
-                    const matchesStock =
-
-                        stock === "all"
-
-                        ||
-
-                        getStatus(product) === stock;
-
-
-                    return (
-                        matchesSearch &&
-                        matchesCategory &&
-                        matchesStock
-                    );
-
-                });
-
-
-            filteredProducts.forEach(
-                (product) => {
-
-
-                    const actualIndex =
-                        products.indexOf(product);
-
-
-                    let status =
-                        getStatus(product);
-
-
-                    let statusClass = "";
-
-
-                    if (status === "In Stock") {
-
-                        statusClass = "in-stock";
-
-                    }
-
-                    else if (status === "Low Stock") {
-
+                    if (status === "Low Stock") {
                         statusClass = "low-stock";
-
                     }
 
-                    else {
-
+                    if (status === "Out of Stock") {
                         statusClass = "out-stock";
-
                     }
 
 
-                    const row =
-                        document.createElement("tr");
-
+                    const row = document.createElement("tr");
 
                     row.innerHTML = `
 
@@ -1287,35 +1137,41 @@
 
                         <td>
                             <strong>
-                                ${product.name}
+                                ${escapeHtml(product.productName)}
                             </strong>
                         </td>
 
-                        <td>${product.category}</td>
-
-                        <td>${product.brand}</td>
-
-                        <td>${product.partNumber}</td>
-
-                        <td>₹${Number(product.purchasePrice).toLocaleString('en-IN')}</td>
-
-                        <td>₹${Number(product.sellingPrice).toLocaleString('en-IN')}</td>
-
-                        <td>${product.quantity}</td>
+                        <td>
+                            ${escapeHtml(product.category)}
+                        </td>
 
                         <td>
+                            ${escapeHtml(product.brand || "-")}
+                        </td>
 
+                        <td>
+                            ${escapeHtml(product.partNumber)}
+                        </td>
+
+                        <td>
+                            ₹${Number(product.sellingPrice).toLocaleString("en-IN")}
+                        </td>
+
+                        <td>
+                            ${product.quantity}
+                        </td>
+
+                        <td>
                             <span class="status ${statusClass}">
                                 ${status}
                             </span>
-
                         </td>
 
                         <td>
 
                             <button
                                 class="edit-btn"
-                                onclick="editProduct(${actualIndex})">
+                                onclick="editProduct(${product.id})">
 
                                 Edit
 
@@ -1323,7 +1179,7 @@
 
                             <button
                                 class="delete-btn"
-                                onclick="deleteProduct(${actualIndex})">
+                                onclick="deleteProduct(${product.id})">
 
                                 Delete
 
@@ -1333,429 +1189,465 @@
 
                     `;
 
-
                     table.appendChild(row);
 
-                }
-            );
+                });
+
+            }
 
 
-            document.getElementById("productCount")
-                .innerHTML =
-                filteredProducts.length +
-                " Products";
-
+            document.getElementById("productCount").textContent =
+                filteredProducts.length + " Products";
 
             updateStatistics();
 
         }
 
 
-        /* =========================================
+        /* =====================================================
+           ESCAPE HTML
+           ===================================================== */
+
+        function escapeHtml(value) {
+
+            if (value === null || value === undefined) {
+                return "";
+            }
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        /* =====================================================
            UPDATE STATISTICS
-        ========================================= */
+           ===================================================== */
 
         function updateStatistics() {
 
             let total = products.length;
-
             let inStock = 0;
-
             let lowStock = 0;
-
             let outStock = 0;
-
 
             products.forEach(product => {
 
-                let status = getStatus(product);
-
+                const status = getStatus(product);
 
                 if (status === "In Stock") {
-
                     inStock++;
-
-                }
-
-                else if (status === "Low Stock") {
-
+                } else if (status === "Low Stock") {
                     lowStock++;
-
-                }
-
-                else {
-
+                } else {
                     outStock++;
-
                 }
 
             });
 
-
-            document.getElementById("totalProducts")
-                .innerHTML = total;
-
-
-            document.getElementById("inStock")
-                .innerHTML = inStock;
-
-
-            document.getElementById("lowStock")
-                .innerHTML = lowStock;
-
-
-            document.getElementById("outStock")
-                .innerHTML = outStock;
+            document.getElementById("totalProducts").textContent = total;
+            document.getElementById("inStock").textContent = inStock;
+            document.getElementById("lowStock").textContent = lowStock;
+            document.getElementById("outStock").textContent = outStock;
 
         }
 
 
-        /* =========================================
-           OPEN ADD PRODUCT MODAL
-        ========================================= */
+        /* =====================================================
+           OPEN ADD MODAL
+           ===================================================== */
 
         function openAddModal() {
 
-            editIndex = -1;
+            editingProductId = null;
 
-            document.getElementById("modalTitle")
-                .innerHTML =
+            document.getElementById("modalTitle").textContent =
                 "Add New Product";
 
+            document.getElementById("saveButton").textContent =
+                "Save Product";
 
-            document.getElementById("productForm")
-                .reset();
+            document.getElementById("productForm").reset();
 
-
-            document.getElementById("productModal")
-                .style.display =
+            document.getElementById("productModal").style.display =
                 "flex";
 
         }
 
 
-        /* =========================================
+        /* =====================================================
            CLOSE MODAL
-        ========================================= */
+           ===================================================== */
 
         function closeModal() {
 
-            document.getElementById("productModal")
-                .style.display =
+            document.getElementById("productModal").style.display =
                 "none";
+
+            editingProductId = null;
+
+            document.getElementById("productForm").reset();
 
         }
 
 
-        /* =========================================
+        /* =====================================================
            EDIT PRODUCT
-        ========================================= */
+           ===================================================== */
 
-        function editProduct(index) {
-
-            editIndex = index;
-
+        function editProduct(id) {
 
             const product =
-                products[index];
+                products.find(item => Number(item.id) === Number(id));
 
+            if (!product) {
+                showMessage("Product not found.", "error");
+                return;
+            }
 
-            document.getElementById("modalTitle")
-                .innerHTML =
+            editingProductId = product.id;
+
+            document.getElementById("modalTitle").textContent =
                 "Edit Product";
 
-
-            document.getElementById("productName")
-                .value =
-                product.name;
+            document.getElementById("saveButton").textContent =
+                "Update Product";
 
 
-            document.getElementById("category")
-                .value =
-                product.category;
+            document.getElementById("productName").value =
+                product.productName || "";
 
+            document.getElementById("category").value =
+                product.category || "";
 
-            document.getElementById("brand")
-                .value =
-                product.brand;
+            document.getElementById("brand").value =
+                product.brand || "";
 
+            document.getElementById("partNumber").value =
+                product.partNumber || "";
 
-            document.getElementById("partNumber")
-                .value =
-                product.partNumber;
+            document.getElementById("sellingPrice").value =
+                product.sellingPrice ?? "";
 
+            document.getElementById("quantity").value =
+                product.quantity ?? "";
 
-            document.getElementById("purchasePrice")
-                .value =
-                product.purchasePrice;
+            document.getElementById("minimumStock").value =
+                product.minimumStock ?? "";
 
+            document.getElementById("supplierId").value =
+                product.supplierId ?? "";
 
-            document.getElementById("sellingPrice")
-                .value =
-                product.sellingPrice;
+            document.getElementById("description").value = "";
 
-
-            document.getElementById("quantity")
-                .value =
-                product.quantity;
-
-
-            document.getElementById("minimumStock")
-                .value =
-                product.minimumStock;
-
-
-            document.getElementById("description")
-                .value =
-                product.description;
-
-
-            document.getElementById("productModal")
-                .style.display =
+            document.getElementById("productModal").style.display =
                 "flex";
 
         }
 
 
-        /* =========================================
-           DELETE PRODUCT
-        ========================================= */
-
-        function deleteProduct(index) {
-
-            const product =
-                products[index];
-
-
-            const confirmDelete =
-                confirm(
-                    "Are you sure you want to delete " +
-                    product.name +
-                    "?"
-                );
-
-
-            if (confirmDelete) {
-
-                products.splice(index, 1);
-
-                saveProducts();
-
-                displayProducts();
-
-            }
-
-        }
-
-
-        /* =========================================
-           SAVE PRODUCT FORM
-        ========================================= */
+        /* =====================================================
+           SAVE / UPDATE PRODUCT
+           ===================================================== */
 
         document
-        .getElementById("productForm")
-        .addEventListener(
-            "submit",
-            function(event) {
+            .getElementById("productForm")
+            .addEventListener("submit", async function (event) {
 
                 event.preventDefault();
 
 
                 const productData = {
 
-                    id:
-                        editIndex === -1
-
-                        ?
-
-                        "P" +
-                        String(products.length + 1)
-                            .padStart(3, "0")
-
-                        :
-
-                        products[editIndex].id,
-
-
-                    name:
-                        document
-                        .getElementById("productName")
-                        .value
-                        .trim(),
-
+                    productName:
+                        document.getElementById("productName")
+                            .value.trim(),
 
                     category:
-                        document
-                        .getElementById("category")
-                        .value,
-
+                        document.getElementById("category")
+                            .value,
 
                     brand:
-                        document
-                        .getElementById("brand")
-                        .value
-                        .trim(),
-
+                        document.getElementById("brand")
+                            .value.trim(),
 
                     partNumber:
-                        document
-                        .getElementById("partNumber")
-                        .value
-                        .trim(),
-
-
-                    purchasePrice:
-                        Number(
-                            document
-                            .getElementById("purchasePrice")
-                            .value
-                        ),
-
+                        document.getElementById("partNumber")
+                            .value.trim(),
 
                     sellingPrice:
                         Number(
-                            document
-                            .getElementById("sellingPrice")
-                            .value
+                            document.getElementById("sellingPrice")
+                                .value
                         ),
-
 
                     quantity:
                         Number(
-                            document
-                            .getElementById("quantity")
-                            .value
+                            document.getElementById("quantity")
+                                .value
                         ),
-
 
                     minimumStock:
                         Number(
-                            document
-                            .getElementById("minimumStock")
-                            .value
+                            document.getElementById("minimumStock")
+                                .value
                         ),
 
-
-                    description:
-                        document
-                        .getElementById("description")
-                        .value
-                        .trim()
+                    supplierId:
+                        document.getElementById("supplierId").value
+                            ? Number(
+                                document.getElementById("supplierId").value
+                            )
+                            : null
 
                 };
 
 
-                if (editIndex === -1) {
+                try {
 
-                    products.push(productData);
+                    let response;
+
+                    if (editingProductId === null) {
+
+                        /* ================= ADD ================= */
+
+                        response = await fetch(API_URL, {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+
+                            body: JSON.stringify(productData)
+
+                        });
+
+                    } else {
+
+                        /* ================= UPDATE ================= */
+
+                        response = await fetch(
+                            API_URL + "/" + editingProductId,
+                            {
+                                method: "PUT",
+
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+
+                                body: JSON.stringify(productData)
+                            }
+                        );
+
+                    }
+
+
+                    const resultText = await response.text();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            resultText || "Operation failed"
+                        );
+
+                    }
+
+
+                    if (editingProductId === null) {
+
+                        showMessage(
+                            "Product added successfully.",
+                            "success"
+                        );
+
+                    } else {
+
+                        showMessage(
+                            "Product updated successfully.",
+                            "success"
+                        );
+
+                    }
+
+
+                    closeModal();
+
+                    await loadProducts();
+
+
+                } catch (error) {
+
+                    console.error("Save error:", error);
+
+                    showMessage(
+                        error.message || "Unable to save product.",
+                        "error"
+                    );
 
                 }
 
-                else {
+            });
 
-                    products[editIndex] =
-                        productData;
+
+        /* =====================================================
+           DELETE PRODUCT
+           ===================================================== */
+
+        async function deleteProduct(id) {
+
+            const product =
+                products.find(item => Number(item.id) === Number(id));
+
+            if (!product) {
+                showMessage("Product not found.", "error");
+                return;
+            }
+
+
+            const confirmed = confirm(
+                "Are you sure you want to delete " +
+                product.productName +
+                "?"
+            );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(API_URL + "/" + id, {
+                        method: "DELETE"
+                    });
+
+
+                const resultText = await response.text();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        resultText || "Unable to delete product"
+                    );
 
                 }
 
 
-                saveProducts();
+                showMessage(
+                    "Product deleted successfully.",
+                    "success"
+                );
 
-                displayProducts();
 
-                closeModal();
+                await loadProducts();
+
+
+            } catch (error) {
+
+                console.error("Delete error:", error);
+
+                showMessage(
+                    error.message || "Unable to delete product.",
+                    "error"
+                );
 
             }
-        );
+
+        }
 
 
-        /* =========================================
+        /* =====================================================
            SEARCH
-        ========================================= */
+           ===================================================== */
 
         document
-        .getElementById("searchInput")
-        .addEventListener(
-            "input",
-            displayProducts
-        );
+            .getElementById("searchInput")
+            .addEventListener("input", displayProducts);
 
 
-        /* =========================================
+        /* =====================================================
            CATEGORY FILTER
-        ========================================= */
+           ===================================================== */
 
         document
-        .getElementById("categoryFilter")
-        .addEventListener(
-            "change",
-            displayProducts
-        );
+            .getElementById("categoryFilter")
+            .addEventListener("change", displayProducts);
 
 
-        /* =========================================
+        /* =====================================================
            STOCK FILTER
-        ========================================= */
+           ===================================================== */
 
         document
-        .getElementById("stockFilter")
-        .addEventListener(
-            "change",
-            displayProducts
-        );
+            .getElementById("stockFilter")
+            .addEventListener("change", displayProducts);
 
 
-        /* =========================================
+        /* =====================================================
            USERNAME
-        ========================================= */
+           ===================================================== */
 
         const username =
+            sessionStorage.getItem("username") ||
             localStorage.getItem("username");
 
 
         if (username) {
 
-            document
-            .getElementById("usernameDisplay")
-            .innerHTML =
-            username;
+            document.getElementById("usernameDisplay").textContent =
+                username;
 
-
-            document
-            .getElementById("profileIcon")
-            .innerHTML =
-            username.charAt(0).toUpperCase();
+            document.getElementById("profileIcon").textContent =
+                username.charAt(0).toUpperCase();
 
         }
 
 
-        /* =========================================
-           CLOSE MODAL WHEN CLICKING OUTSIDE
-        ========================================= */
+        /* =====================================================
+           LOGOUT
+           ===================================================== */
 
-        window.onclick =
-        function(event) {
+        function logout() {
+
+            sessionStorage.removeItem("userId");
+            sessionStorage.removeItem("username");
+            sessionStorage.removeItem("role");
+
+            localStorage.removeItem("username");
+
+        }
+
+
+        /* =====================================================
+           CLOSE MODAL WHEN CLICKING OUTSIDE
+           ===================================================== */
+
+        window.onclick = function (event) {
 
             const modal =
-                document.getElementById(
-                    "productModal"
-                );
-
+                document.getElementById("productModal");
 
             if (event.target === modal) {
-
                 closeModal();
-
             }
 
         };
 
 
-        /* =========================================
+        /* =====================================================
            INITIAL LOAD
-        ========================================= */
+           ===================================================== */
 
-        displayProducts();
+        loadProducts();
 
     </script>
 

@@ -274,6 +274,59 @@ window.location.href="Dashboard.html";
 });
 
 </script>
+<script>
+document.getElementById("registerForm").addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const username = document.getElementById("username").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!username || !email || !password) {
+        alert("Please fill in all required fields.");
+        return;
+    }
+
+    const userData = {
+        username: username,
+        email: email,
+        phone: phone,
+        passwordHash: password
+    };
+
+    try {
+
+        const response = await fetch("http://localhost:8080/api/auth/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(userData)
+        });
+
+        const result = await response.text();
+
+        if (response.ok) {
+
+            alert("Registration successful!");
+
+            window.location.href = "Login.html";
+
+        } else {
+
+            alert("Registration failed: " + result);
+        }
+
+    } catch (error) {
+
+        console.error("Error:", error);
+
+        alert("Unable to connect to StockDrive server.");
+    }
+});
+</script>
 
 </body>
 </html>

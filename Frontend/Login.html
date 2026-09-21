@@ -289,6 +289,59 @@ form.addEventListener("submit", function(e){
 
 });
 </script>
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", async function(event) {
 
+    event.preventDefault();
+
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!username || !password) {
+        alert("Please enter username and password.");
+        return;
+    }
+
+    const loginData = {
+        username: username,
+        password: password
+    };
+
+    try {
+
+        const response = await fetch("http://localhost:8080/api/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(loginData)
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+
+            alert("Login successful!");
+
+            sessionStorage.setItem("userId", result.userId);
+            sessionStorage.setItem("username", result.username);
+            sessionStorage.setItem("role", result.role);
+
+            window.location.href = "Dashboard.html";
+
+        } else {
+
+            alert(result);
+
+        }
+
+    } catch (error) {
+
+        console.error("Login error:", error);
+
+        alert("Unable to connect to StockDrive server.");
+    }
+});
+</script>
 </body>
 </html>

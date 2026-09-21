@@ -1,1064 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>StockDrive - Stock Alerts</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-
-    <style>
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background: #f4f7fb;
-            color: #333;
-        }
-
-        /* ================= SIDEBAR ================= */
-
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 250px;
-            height: 100vh;
-            background: #123456;
-            color: white;
-            padding: 25px 15px;
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-
-        .logo h2 {
-            font-size: 23px;
-        }
-
-        .logo p {
-            font-size: 12px;
-            color: #cbd8e5;
-            margin-top: 5px;
-        }
-
-        .menu {
-            list-style: none;
-        }
-
-        .menu li {
-            margin-bottom: 10px;
-        }
-
-        .menu a {
-            display: block;
-            text-decoration: none;
-            color: white;
-            padding: 13px 15px;
-            border-radius: 8px;
-            transition: 0.3s;
-        }
-
-        .menu a:hover,
-        .menu a.active {
-            background: #1f4e79;
-        }
-
-        .logout {
-            position: absolute;
-            bottom: 25px;
-            left: 15px;
-            right: 15px;
-        }
-
-        .logout a {
-            background: #c0392b;
-        }
-
-        .logout a:hover {
-            background: #e74c3c;
-        }
-
-        /* ================= MAIN ================= */
-
-        .main {
-            margin-left: 250px;
-            min-height: 100vh;
-        }
-
-        /* ================= TOPBAR ================= */
-
-        .topbar {
-            height: 75px;
-            background: white;
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            padding: 0 30px;
-
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-        }
-
-        .topbar h2 {
-            color: #123456;
-        }
-
-        .profile {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .profile-icon {
-            width: 40px;
-            height: 40px;
-
-            border-radius: 50%;
-
-            background: #1f4e79;
-            color: white;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            font-weight: 600;
-        }
-
-        /* ================= CONTENT ================= */
-
-        .content {
-            padding: 30px;
-        }
-
-        .page-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            margin-bottom: 25px;
-        }
-
-        .page-title h1 {
-            font-size: 28px;
-            color: #123456;
-        }
-
-        .page-title p {
-            color: #777;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-
-        /* ================= SUMMARY CARDS ================= */
-
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-
-            gap: 20px;
-
-            margin-bottom: 25px;
-        }
-
-        .card {
-            background: white;
-
-            padding: 20px;
-
-            border-radius: 12px;
-
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        .card-icon {
-            font-size: 25px;
-            margin-bottom: 8px;
-        }
-
-        .card-title {
-            color: #777;
-            font-size: 13px;
-        }
-
-        .card h2 {
-            color: #123456;
-            font-size: 27px;
-            margin-top: 5px;
-        }
-
-        /* ================= ALERT PANEL ================= */
-
-        .panel {
-            background: white;
-
-            border-radius: 12px;
-
-            padding: 22px;
-
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        .toolbar {
-            display: flex;
-
-            gap: 12px;
-
-            margin-bottom: 20px;
-
-            flex-wrap: wrap;
-        }
-
-        .search {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .search input {
-            width: 100%;
-
-            padding: 12px;
-
-            border: 1px solid #ddd;
-
-            border-radius: 8px;
-
-            font-size: 14px;
-        }
-
-        .toolbar select {
-            width: 180px;
-
-            padding: 12px;
-
-            border: 1px solid #ddd;
-
-            border-radius: 8px;
-
-            font-size: 14px;
-        }
-
-        /* ================= TABLE ================= */
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 13px;
-
-            text-align: left;
-
-            border-bottom: 1px solid #eee;
-
-            font-size: 13px;
-        }
-
-        th {
-            background: #f8fafc;
-
-            color: #555;
-
-            font-weight: 600;
-        }
-
-        tr:hover {
-            background: #fafcff;
-        }
-
-        /* ================= STOCK LEVEL ================= */
-
-        .stock-number {
-            font-weight: 600;
-        }
-
-        .critical {
-            color: #c0392b;
-        }
-
-        .low {
-            color: #d68910;
-        }
-
-        .normal {
-            color: #26733b;
-        }
-
-        /* ================= ALERT BADGES ================= */
-
-        .alert {
-            padding: 5px 10px;
-
-            border-radius: 15px;
-
-            font-size: 11px;
-
-            font-weight: 500;
-        }
-
-        .critical-alert {
-            background: #f8d7da;
-            color: #842029;
-        }
-
-        .low-alert {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        /* ================= ACTION BUTTON ================= */
-
-        .action-btn {
-            border: none;
-
-            border-radius: 6px;
-
-            padding: 7px 10px;
-
-            cursor: pointer;
-
-            font-size: 12px;
-        }
-
-        .order-btn {
-            background: #1f4e79;
-
-            color: white;
-        }
-
-        .order-btn:hover {
-            background: #0b6e99;
-        }
-
-        /* ================= ALERT MESSAGE ================= */
-
-        .no-alert {
-            text-align: center;
-
-            padding: 35px;
-
-            color: #777;
-
-            display: none;
-        }
-
-        /* ================= RESPONSIVE ================= */
-
-        @media(max-width: 1100px) {
-
-            .cards {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-        }
-
-        @media(max-width: 700px) {
-
-            .sidebar {
-                width: 200px;
-            }
-
-            .main {
-                margin-left: 200px;
-            }
-
-            .content {
-                padding: 18px;
-            }
-
-            .cards {
-                grid-template-columns: 1fr;
-            }
-
-            .page-title {
-                flex-direction: column;
-
-                align-items: flex-start;
-
-                gap: 12px;
-            }
-
-            table {
-                min-width: 900px;
-            }
-
-            .panel {
-                overflow-x: auto;
-            }
-
-        }
-
-    </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>StockDrive - Stock Alerts</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{background:#f4f7fb;color:#333}
+.sidebar{position:fixed;left:0;top:0;width:250px;height:100vh;background:#123456;color:white;padding:25px 15px}
+.logo{text-align:center;margin-bottom:35px}.logo h2{font-size:23px}.logo p{font-size:12px;color:#cbd8e5;margin-top:5px}
+.menu{list-style:none}.menu li{margin-bottom:10px}.menu a{display:block;text-decoration:none;color:white;padding:13px 15px;border-radius:8px;transition:.3s}.menu a:hover,.menu a.active{background:#1f4e79}
+.logout{position:absolute;bottom:25px;left:15px;right:15px}.logout a{background:#c0392b}.logout a:hover{background:#e74c3c}
+.main{margin-left:250px;min-height:100vh}
+.topbar{height:75px;background:white;display:flex;justify-content:space-between;align-items:center;padding:0 30px;box-shadow:0 2px 10px rgba(0,0,0,.08)}.topbar h2{color:#123456}
+.profile{display:flex;align-items:center;gap:12px}.profile-icon{width:40px;height:40px;border-radius:50%;background:#1f4e79;color:white;display:flex;justify-content:center;align-items:center;font-weight:600}
+.content{padding:30px}.page-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.page-title h1{font-size:28px;color:#123456}.page-title p{color:#777;font-size:14px;margin-top:5px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:25px}.card{background:white;padding:20px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,.08)}.card-icon{font-size:25px;margin-bottom:8px}.card-title{color:#777;font-size:13px}.card h2{color:#123456;font-size:27px;margin-top:5px}
+.panel{background:white;border-radius:12px;padding:22px;box-shadow:0 4px 15px rgba(0,0,0,.08)}
+.toolbar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}.search{flex:1;min-width:250px}.search input{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:14px}.toolbar select{width:180px;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:14px}
+table{width:100%;border-collapse:collapse;min-width:900px}th,td{padding:13px;text-align:left;border-bottom:1px solid #eee;font-size:13px}th{background:#f8fafc;color:#555;font-weight:600}tr:hover{background:#fafcff}
+.stock-number{font-weight:600}.critical{color:#c0392b}.low{color:#d68910}.alert{padding:5px 10px;border-radius:15px;font-size:11px;font-weight:500}.critical-alert{background:#f8d7da;color:#842029}.low-alert{background:#fff3cd;color:#856404}
+.action-btn{border:none;border-radius:6px;padding:7px 10px;cursor:pointer;font-size:12px}.order-btn{background:#1f4e79;color:white}.order-btn:hover{background:#0b6e99}
+.no-alert{text-align:center;padding:35px;color:#777;display:none}
+.message{display:none;padding:12px 15px;margin-bottom:20px;border-radius:8px;font-size:14px}.error{background:#f8d7da;color:#842029}
+@media(max-width:1100px){.cards{grid-template-columns:repeat(2,1fr)}}@media(max-width:700px){.sidebar{width:200px}.main{margin-left:200px}.content{padding:18px}.cards{grid-template-columns:1fr}.page-title{flex-direction:column;align-items:flex-start;gap:12px}.panel{overflow-x:auto}}
+</style>
 </head>
-
 <body>
-
-    <!-- ================= SIDEBAR ================= -->
-
-    <div class="sidebar">
-
-        <div class="logo">
-
-            <h2>StockDrive</h2>
-
-
-        </div>
-
-        <ul class="menu">
-
-            <li>
-                <a href="dashboard.html">
-                    🏠 Dashboard
-                </a>
-            </li>
-
-            <li>
-                <a href="inventory.html">
-                    📦 Inventory
-                </a>
-            </li>
-
-            <li>
-                <a href="supplier.html">
-                    🚚 Suppliers
-                </a>
-            </li>
-
-            <li>
-                <a href="PurchaseOrders.html">
-                    🛒 Purchase Orders
-                </a>
-            </li>
-
-            <li>
-                <a href="stockalerts.html" class="active">
-                    ⚠️ Stock Alerts
-                </a>
-            </li>
-
-            <li>
-                <a href="reports.html">
-                    📊 Reports
-                </a>
-            </li>
-
-            <li>
-                <a href="admin.html">
-                    👥 Users
-                </a>
-            </li>
-
-        </ul>
-
-        <div class="logout">
-
-            <a href="index.html">
-                🚪 Logout
-            </a>
-
-        </div>
-
-    </div>
-
-
-    <!-- ================= MAIN ================= -->
-
-    <div class="main">
-
-        <!-- TOPBAR -->
-
-        <div class="topbar">
-
-            <h2>Stock Alerts</h2>
-
-            <div class="profile">
-
-                <div class="profile-icon">
-                    A
-                </div>
-
-                <span id="username">
-                    Admin
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <!-- ================= CONTENT ================= -->
-
-        <div class="content">
-
-            <!-- PAGE TITLE -->
-
-            <div class="page-title">
-
-                <div>
-
-                    <h1>Stock Alerts</h1>
-
-                    <p>
-                        Monitor products that require stock replenishment.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <!-- ================= SUMMARY CARDS ================= -->
-
-            <div class="cards">
-
-                <div class="card">
-
-                    <div class="card-icon">
-                        ⚠️
-                    </div>
-
-                    <div class="card-title">
-                        Total Alerts
-                    </div>
-
-                    <h2 id="totalAlerts">
-                        0
-                    </h2>
-
-                </div>
-
-
-                <div class="card">
-
-                    <div class="card-icon">
-                        🔴
-                    </div>
-
-                    <div class="card-title">
-                        Critical Stock
-                    </div>
-
-                    <h2 id="criticalStock">
-                        0
-                    </h2>
-
-                </div>
-
-
-                <div class="card">
-
-                    <div class="card-icon">
-                        🟠
-                    </div>
-
-                    <div class="card-title">
-                        Low Stock
-                    </div>
-
-                    <h2 id="lowStock">
-                        0
-                    </h2>
-
-                </div>
-
-
-                <div class="card">
-
-                    <div class="card-icon">
-                        📦
-                    </div>
-
-                    <div class="card-title">
-                        Items to Reorder
-                    </div>
-
-                    <h2 id="itemsToReorder">
-                        0
-                    </h2>
-
-                </div>
-
-            </div>
-
-
-            <!-- ================= ALERT TABLE ================= -->
-
-            <div class="panel">
-
-                <div class="toolbar">
-
-                    <div class="search">
-
-                        <input
-                            type="text"
-                            id="search"
-                            placeholder="Search product or category..."
-                            onkeyup="displayAlerts()">
-
-                    </div>
-
-
-                    <select
-                        id="alertFilter"
-                        onchange="displayAlerts()">
-
-                        <option value="">
-                            All Alerts
-                        </option>
-
-                        <option value="Critical">
-                            Critical
-                        </option>
-
-                        <option value="Low">
-                            Low
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Product ID</th>
-
-                            <th>Product Name</th>
-
-                            <th>Category</th>
-
-                            <th>Current Stock</th>
-
-                            <th>Reorder Level</th>
-
-                            <th>Required Qty</th>
-
-                            <th>Alert Level</th>
-
-                            <th>Action</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody id="alertTable">
-
-                    </tbody>
-
-                </table>
-
-
-                <div
-                    class="no-alert"
-                    id="noAlert">
-
-                    ✅ All products have sufficient stock.
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ================= JAVASCRIPT ================= -->
-
-    <script>
-
-        /*
-            Temporary frontend data.
-
-            Later this data will come from
-            the MySQL database through the backend.
-        */
-
-        let inventory = [
-
-            {
-                id: 1,
-                name: "Brake Pad",
-                category: "Brake System",
-                stock: 5,
-                reorder: 20
-            },
-
-            {
-                id: 2,
-                name: "Oil Filter",
-                category: "Engine Parts",
-                stock: 8,
-                reorder: 30
-            },
-
-            {
-                id: 3,
-                name: "Air Filter",
-                category: "Engine Parts",
-                stock: 18,
-                reorder: 25
-            },
-
-            {
-                id: 4,
-                name: "Clutch Plate",
-                category: "Transmission",
-                stock: 3,
-                reorder: 15
-            },
-
-            {
-                id: 5,
-                name: "Headlight",
-                category: "Electrical",
-                stock: 22,
-                reorder: 25
-            },
-
-            {
-                id: 6,
-                name: "Spark Plug",
-                category: "Engine Parts",
-                stock: 50,
-                reorder: 30
-            },
-
-            {
-                id: 7,
-                name: "Radiator",
-                category: "Cooling System",
-                stock: 4,
-                reorder: 10
-            }
-
-        ];
-
-
-        /* ================= CHECK ALERT LEVEL ================= */
-
-        function getAlertLevel(product) {
-
-            if (product.stock <= product.reorder * 0.4) {
-
-                return "Critical";
-
-            }
-
-            return "Low";
-
-        }
-
-
-        /* ================= DISPLAY ALERTS ================= */
-
-        function displayAlerts() {
-
-            const search =
-                document.getElementById("search")
-                    .value
-                    .toLowerCase();
-
-
-            const filter =
-                document.getElementById("alertFilter")
-                    .value;
-
-
-            const alerts =
-                inventory.filter(function(product) {
-
-                    /*
-                        Only products below
-                        their reorder level
-                        are displayed.
-                    */
-
-                    return product.stock < product.reorder;
-
-                });
-
-
-            const filteredAlerts =
-                alerts.filter(function(product) {
-
-                    const level =
-                        getAlertLevel(product);
-
-
-                    const matchesSearch =
-                        product.name
-                            .toLowerCase()
-                            .includes(search) ||
-
-                        product.category
-                            .toLowerCase()
-                            .includes(search);
-
-
-                    const matchesFilter =
-                        filter === "" ||
-                        level === filter;
-
-
-                    return matchesSearch &&
-                           matchesFilter;
-
-                });
-
-
-            const table =
-                document.getElementById("alertTable");
-
-
-            table.innerHTML = "";
-
-
-            if (filteredAlerts.length === 0) {
-
-                document.getElementById("noAlert")
-                    .style.display = "block";
-
-            }
-
-            else {
-
-                document.getElementById("noAlert")
-                    .style.display = "none";
-
-            }
-
-
-            filteredAlerts.forEach(function(product) {
-
-                const level =
-                    getAlertLevel(product);
-
-
-                const required =
-                    product.reorder -
-                    product.stock;
-
-
-                let levelClass =
-                    "low-alert";
-
-
-                let stockClass =
-                    "low";
-
-
-                if (level === "Critical") {
-
-                    levelClass =
-                        "critical-alert";
-
-                    stockClass =
-                        "critical";
-
-                }
-
-
-                table.innerHTML += `
-
-                    <tr>
-
-                        <td>
-                            P${String(product.id).padStart(3, "0")}
-                        </td>
-
-                        <td>
-                            ${product.name}
-                        </td>
-
-                        <td>
-                            ${product.category}
-                        </td>
-
-                        <td>
-
-                            <span class="stock-number ${stockClass}">
-                                ${product.stock}
-                            </span>
-
-                        </td>
-
-                        <td>
-                            ${product.reorder}
-                        </td>
-
-                        <td>
-                            ${required}
-                        </td>
-
-                        <td>
-
-                            <span class="alert ${levelClass}">
-                                ${level}
-                            </span>
-
-                        </td>
-
-                        <td>
-
-                            <button
-                                class="action-btn order-btn"
-                                onclick="createOrder('${product.name}')">
-
-                                Create Order
-
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-            });
-
-
-            updateCards();
-
-        }
-
-
-        /* ================= UPDATE CARDS ================= */
-
-        function updateCards() {
-
-            const alerts =
-                inventory.filter(function(product) {
-
-                    return product.stock <
-                           product.reorder;
-
-                });
-
-
-            const critical =
-                alerts.filter(function(product) {
-
-                    return getAlertLevel(product) ===
-                           "Critical";
-
-                });
-
-
-            const low =
-                alerts.filter(function(product) {
-
-                    return getAlertLevel(product) ===
-                           "Low";
-
-                });
-
-
-            let reorderQuantity = 0;
-
-
-            alerts.forEach(function(product) {
-
-                reorderQuantity +=
-                    product.reorder -
-                    product.stock;
-
-            });
-
-
-            document.getElementById("totalAlerts")
-                .innerText =
-                alerts.length;
-
-
-            document.getElementById("criticalStock")
-                .innerText =
-                critical.length;
-
-
-            document.getElementById("lowStock")
-                .innerText =
-                low.length;
-
-
-            document.getElementById("itemsToReorder")
-                .innerText =
-                reorderQuantity;
-
-        }
-
-
-        /* ================= CREATE PURCHASE ORDER ================= */
-
-        function createOrder(productName) {
-
-            const confirmOrder =
-                confirm(
-                    "Create a purchase order for " +
-                    productName +
-                    "?"
-                );
-
-
-            if (confirmOrder) {
-
-                /*
-                    Later this button can directly
-                    create a purchase order in the
-                    backend/database.
-                */
-
-                alert(
-                    "Purchase order request created for " +
-                    productName
-                );
-
-            }
-
-        }
-
-
-        /* ================= USERNAME ================= */
-
-        const savedUser =
-            localStorage.getItem("username");
-
-
-        if (savedUser) {
-
-            document.getElementById("username")
-                .innerText =
-                savedUser;
-
-        }
-
-
-        /* ================= INITIAL LOAD ================= */
-
+<div class="sidebar">
+<div class="logo"><h2>StockDrive</h2><p>Inventory Management System</p></div>
+<ul class="menu">
+<li><a href="Dashboard.html">🏠 Dashboard</a></li>
+<li><a href="inventory.html">📦 Inventory</a></li>
+<li><a href="supplier.html">🚚 Suppliers</a></li>
+<li><a href="PurchaseOrders.html">🛒 Purchase Orders</a></li>
+<li><a href="stockalerts.html" class="active">⚠️ Stock Alerts</a></li>
+<li><a href="reports.html">📊 Reports</a></li>
+<li><a href="admin.html">👥 Users</a></li>
+</ul>
+<div class="logout"><a href="Login.html" onclick="logout()">🚪 Logout</a></div>
+</div>
+
+<div class="main">
+<div class="topbar">
+<h2>Stock Alerts</h2>
+<div class="profile"><div class="profile-icon" id="profileIcon">A</div><span id="username">Admin</span></div>
+</div>
+
+<div class="content">
+<div id="message" class="message"></div>
+
+<div class="page-title">
+<div><h1>Stock Alerts</h1><p>Monitor products that require stock replenishment.</p></div>
+</div>
+
+<div class="cards">
+<div class="card"><div class="card-icon">⚠️</div><div class="card-title">Total Alerts</div><h2 id="totalAlerts">0</h2></div>
+<div class="card"><div class="card-icon">🔴</div><div class="card-title">Critical Stock</div><h2 id="criticalStock">0</h2></div>
+<div class="card"><div class="card-icon">🟠</div><div class="card-title">Low Stock</div><h2 id="lowStock">0</h2></div>
+<div class="card"><div class="card-icon">📦</div><div class="card-title">Items to Reorder</div><h2 id="itemsToReorder">0</h2></div>
+</div>
+
+<div class="panel">
+<div class="toolbar">
+<div class="search"><input type="text" id="search" placeholder="Search product or category..." oninput="displayAlerts()"></div>
+<select id="alertFilter" onchange="displayAlerts()">
+<option value="">All Alerts</option>
+<option value="Critical">Critical</option>
+<option value="Low">Low</option>
+</select>
+</div>
+
+<table>
+<thead>
+<tr>
+<th>Product ID</th><th>Product Name</th><th>Category</th><th>Current Stock</th><th>Reorder Level</th><th>Required Qty</th><th>Alert Level</th><th>Action</th>
+</tr>
+</thead>
+<tbody id="alertTable"></tbody>
+</table>
+<div class="no-alert" id="noAlert">✅ All products have sufficient stock.</div>
+</div>
+</div>
+</div>
+
+<script>
+const API_URL="http://localhost:8080/api/stock-alerts";
+let alerts=[];
+
+async function loadAlerts(){
+    try{
+        const response=await fetch(API_URL);
+        if(!response.ok)throw new Error("Unable to load stock alerts");
+        alerts=await response.json();
         displayAlerts();
+    }catch(error){
+        console.error(error);
+        showMessage("Cannot connect to StockDrive backend. Make sure Spring Boot is running.");
+    }
+}
 
-    </script>
+function showMessage(message){
+    const box=document.getElementById("message");
+    box.textContent=message;
+    box.style.display="block";
+}
 
+function getAlertLevel(product){
+    const stock=Number(product.quantity);
+    const reorder=Number(product.minimumStock);
+    return stock<=reorder*0.4?"Critical":"Low";
+}
+
+function displayAlerts(){
+    const search=document.getElementById("search").value.toLowerCase().trim();
+    const filter=document.getElementById("alertFilter").value;
+    const table=document.getElementById("alertTable");
+
+    const filtered=alerts.filter(product=>{
+        const name=(product.productName||"").toLowerCase();
+        const category=(product.category||"").toLowerCase();
+        const level=getAlertLevel(product);
+        return (name.includes(search)||category.includes(search))&&(filter===""||level===filter);
+    });
+
+    table.innerHTML="";
+    document.getElementById("noAlert").style.display=filtered.length?"none":"block";
+
+    filtered.forEach(product=>{
+        const level=getAlertLevel(product);
+        const required=Math.max(Number(product.minimumStock)-Number(product.quantity),0);
+        const levelClass=level==="Critical"?"critical-alert":"low-alert";
+        const stockClass=level==="Critical"?"critical":"low";
+
+        table.innerHTML+=`
+        <tr>
+        <td>${product.id}</td>
+        <td><strong>${escapeHtml(product.productName)}</strong></td>
+        <td>${escapeHtml(product.category)}</td>
+        <td><span class="stock-number ${stockClass}">${product.quantity}</span></td>
+        <td>${product.minimumStock}</td>
+        <td>${required}</td>
+        <td><span class="alert ${levelClass}">${level}</span></td>
+        <td><button class="action-btn order-btn" onclick="createOrder('${escapeHtml(product.productName)}')">Create Order</button></td>
+        </tr>`;
+    });
+
+    updateCards();
+}
+
+function updateCards(){
+    const critical=alerts.filter(p=>getAlertLevel(p)==="Critical").length;
+    const low=alerts.filter(p=>getAlertLevel(p)==="Low").length;
+    const reorder=alerts.reduce((sum,p)=>sum+Math.max(Number(p.minimumStock)-Number(p.quantity),0),0);
+
+    document.getElementById("totalAlerts").textContent=alerts.length;
+    document.getElementById("criticalStock").textContent=critical;
+    document.getElementById("lowStock").textContent=low;
+    document.getElementById("itemsToReorder").textContent=reorder;
+}
+
+function createOrder(name){
+    if(confirm("Create a purchase order for "+name+"?")){
+        alert("Purchase order request created for "+name+". Purchase Order module will handle the actual order.");
+    }
+}
+
+function escapeHtml(value){
+    return String(value??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
+
+function logout(){
+    sessionStorage.removeItem("userId");
+    sessionStorage.removeItem("username");
+    sessionStorage.removeItem("role");
+    localStorage.removeItem("username");
+}
+
+const savedUser=sessionStorage.getItem("username")||localStorage.getItem("username");
+if(savedUser){
+    document.getElementById("username").textContent=savedUser;
+    document.getElementById("profileIcon").textContent=savedUser.charAt(0).toUpperCase();
+}
+
+loadAlerts();
+</script>
 </body>
-
 </html>

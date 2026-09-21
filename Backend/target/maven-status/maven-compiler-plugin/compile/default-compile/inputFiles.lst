@@ -1,0 +1,14 @@
+C:\Users\Tanmay\OneDrive\Documents\Mini project -Sem5\Backend\src\main\java\com\stockdrive\config\PasswordConfig.java
+C:\Users\Tanmay\OneDrive\Documents\Mini project -Sem5\Backend\src\main\java\com\stockdrive\controller\AuthController.java
+C:\Users\Tanmay\OneDrive\Documents\Mini project -Sem5\Backend\src\main\java\com\stockdrive\controller\DashboardController.java
+C:\Users\Tanmay\OneDrive\Documents\Mini project -Sem5\Backend\src\main\java\com\stockdrive\controller\ProductController.java
+C:\Users\Tanmay\OneDrive\Documents\Mini project -Sem5\Backend\src\main\java\com\stockdrive\controller\StockAlertController.java
+C:\Users\Tanmay\OneDrive\Documents\Mini project -Sem5\Backend\src\main\java\com\stockdrive\model\DashboardResponse.java
+C:\Users\Tanmay\OneDrive\Documents\Mini project -Sem5\Backend\src\main\java\com\stockdrive\model\LoginRequest.java
+C:\Users\Tanmay\OneDrive\Documents\Mini project -Sem5\Backend\src\main\java\com\stockdrive\model\LoginResponse.java
+C:\Users\Tanmay\OneDrive\Documents\Mini project -Sem5\Backend\src\main\java\com\stockdrive\model\Product.java
+C:\Users\Tanmay\OneDrive\Documents\Mini project -Sem5\Backend\src\main\java\com\stockdrive\model\User.java
+C:\Users\Tanmay\OneDrive\Documents\Mini project -Sem5\Backend\src\main\java\com\stockdrive\repository\ProductRepository.java
+C:\Users\Tanmay\OneDrive\Documents\Mini project -Sem5\Backend\src\main\java\com\stockdrive\repository\StockAlertRepository.java
+C:\Users\Tanmay\OneDrive\Documents\Mini project -Sem5\Backend\src\main\java\com\stockdrive\repository\UserRepository.java
+C:\Users\Tanmay\OneDrive\Documents\Mini project -Sem5\Backend\src\main\java\com\stockdrive\StockDriveApplication.java
