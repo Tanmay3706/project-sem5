@@ -1,809 +1,848 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>StockDrive - Purchase Orders</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-
-    <style>
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background: #f4f7fb;
-            color: #333;
-        }
-
-        /* ================= SIDEBAR ================= */
-
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 250px;
-            height: 100vh;
-            background: #123456;
-            color: white;
-            padding: 25px 15px;
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-
-        .logo h2 {
-            font-size: 23px;
-        }
-
-        .logo p {
-            font-size: 12px;
-            color: #cbd8e5;
-            margin-top: 5px;
-        }
-
-        .menu {
-            list-style: none;
-        }
-
-        .menu li {
-            margin-bottom: 10px;
-        }
-
-        .menu a {
-            display: block;
-            text-decoration: none;
-            color: white;
-            padding: 13px 15px;
-            border-radius: 8px;
-            transition: 0.3s;
-        }
-
-        .menu a:hover,
-        .menu a.active {
-            background: #1f4e79;
-        }
-
-        .logout {
-            position: absolute;
-            bottom: 25px;
-            left: 15px;
-            right: 15px;
-        }
-
-        .logout a {
-            background: #c0392b;
-        }
-
-        .logout a:hover {
-            background: #e74c3c;
-        }
-
-        /* ================= MAIN ================= */
-
-        .main {
-            margin-left: 250px;
-            min-height: 100vh;
-        }
-
-        /* ================= TOPBAR ================= */
-
-        .topbar {
-            height: 75px;
-            background: white;
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            padding: 0 30px;
-
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-        }
-
-        .topbar h2 {
-            color: #123456;
-        }
-
-        .profile {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .profile-icon {
-            width: 40px;
-            height: 40px;
-
-            border-radius: 50%;
-
-            background: #1f4e79;
-            color: white;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            font-weight: 600;
-        }
-
-        /* ================= CONTENT ================= */
-
-        .content {
-            padding: 30px;
-        }
-
-        .page-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            margin-bottom: 25px;
-        }
-
-        .page-title h1 {
-            font-size: 28px;
-            color: #123456;
-        }
-
-        .page-title p {
-            color: #777;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-
-        .add-btn {
-            background: #1f4e79;
-            color: white;
-
-            border: none;
-            border-radius: 8px;
-
-            padding: 12px 18px;
-
-            font-size: 14px;
-            cursor: pointer;
-
-            transition: 0.3s;
-        }
-
-        .add-btn:hover {
-            background: #0b6e99;
-        }
-
-        /* ================= CARDS ================= */
-
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-
-            gap: 20px;
-
-            margin-bottom: 25px;
-        }
-
-        .card {
-            background: white;
-
-            padding: 20px;
-
-            border-radius: 12px;
-
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        .card-icon {
-            font-size: 25px;
-            margin-bottom: 8px;
-        }
-
-        .card-title {
-            color: #777;
-            font-size: 13px;
-        }
-
-        .card h2 {
-            color: #123456;
-            font-size: 27px;
-            margin-top: 5px;
-        }
-
-        /* ================= PANEL ================= */
-
-        .panel {
-            background: white;
-
-            border-radius: 12px;
-
-            padding: 22px;
-
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        /* ================= TOOLBAR ================= */
-
-        .toolbar {
-            display: flex;
-
-            gap: 12px;
-
-            margin-bottom: 20px;
-
-            flex-wrap: wrap;
-        }
-
-        .search {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .search input {
-            width: 100%;
-
-            padding: 12px;
-
-            border: 1px solid #ddd;
-
-            border-radius: 8px;
-
-            font-size: 14px;
-        }
-
-        .toolbar select {
-            width: 180px;
-
-            padding: 12px;
-
-            border: 1px solid #ddd;
-
-            border-radius: 8px;
-
-            font-size: 14px;
-        }
-
-        /* ================= TABLE ================= */
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th,
-        td {
-            padding: 13px;
-
-            text-align: left;
-
-            border-bottom: 1px solid #eee;
-
-            font-size: 13px;
-        }
-
-        th {
-            background: #f8fafc;
-            color: #555;
-            font-weight: 600;
-        }
-
-        tr:hover {
-            background: #fafcff;
-        }
-
-        /* ================= STATUS ================= */
-
-        .status {
-            padding: 5px 10px;
-
-            border-radius: 15px;
-
-            font-size: 11px;
-        }
-
-        .pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .approved {
-            background: #d4edda;
-            color: #26733b;
-        }
-
-        .completed {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-
-        .cancelled {
-            background: #f8d7da;
-            color: #842029;
-        }
-
-        /* ================= ACTION BUTTONS ================= */
-
-        .action-btn {
-            border: none;
-
-            border-radius: 6px;
-
-            padding: 6px 9px;
-
-            cursor: pointer;
-
-            font-size: 12px;
-
-            margin-right: 4px;
-        }
-
-        .view {
-            background: #e8f1fa;
-            color: #1f4e79;
-        }
-
-        .edit {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .delete {
-            background: #f8d7da;
-            color: #842029;
-        }
-
-        /* ================= MODAL ================= */
-
-        .modal {
-            display: none;
-
-            position: fixed;
-
-            z-index: 10;
-
-            left: 0;
-            top: 0;
-
-            width: 100%;
-            height: 100%;
-
-            background: rgba(0, 0, 0, 0.5);
-
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-box {
-            background: white;
-
-            width: 600px;
-
-            max-width: 90%;
-
-            max-height: 90vh;
-
-            overflow-y: auto;
-
-            border-radius: 12px;
-
-            padding: 25px;
-        }
-
-        .modal-box h2 {
-            color: #123456;
-
-            margin-bottom: 20px;
-        }
-
-        /* ================= FORM ================= */
-
-        .form-grid {
-            display: grid;
-
-            grid-template-columns: 1fr 1fr;
-
-            gap: 15px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group.full {
-            grid-column: 1 / 3;
-        }
-
-        .form-group label {
-            font-size: 13px;
-
-            margin-bottom: 6px;
-
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 10px;
-
-            border: 1px solid #ccc;
-
-            border-radius: 7px;
-
-            font-size: 13px;
-        }
-
-        /* ================= MODAL BUTTONS ================= */
-
-        .modal-buttons {
-            display: flex;
-
-            gap: 10px;
-
-            margin-top: 20px;
-        }
-
-        .save-btn,
-        .cancel-btn {
-            flex: 1;
-
-            padding: 11px;
-
-            border: none;
-
-            border-radius: 7px;
-
-            cursor: pointer;
-
-            font-size: 14px;
-        }
-
-        .save-btn {
-            background: #1f4e79;
-            color: white;
-        }
-
-        .save-btn:hover {
-            background: #0b6e99;
-        }
-
-        .cancel-btn {
-            background: #ddd;
-            color: #333;
-        }
-
-        /* ================= ORDER DETAILS ================= */
-
-        .order-details {
-            display: none;
-
-            margin-top: 20px;
-
-            padding: 20px;
-
-            background: #f8fafc;
-
-            border-radius: 10px;
-        }
-
-        .order-details h3 {
-            color: #123456;
-            margin-bottom: 15px;
-        }
-
-        .detail-row {
-            display: flex;
-
-            justify-content: space-between;
-
-            padding: 8px 0;
-
-            border-bottom: 1px solid #eee;
-
-            font-size: 13px;
-        }
-
-        /* ================= RESPONSIVE ================= */
-
-        @media(max-width: 1100px) {
-
-            .cards {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-        }
-
-        @media(max-width: 700px) {
-
-            .sidebar {
-                width: 200px;
-            }
-
-            .main {
-                margin-left: 200px;
-            }
-
-            .content {
-                padding: 18px;
-            }
-
-            .cards {
-                grid-template-columns: 1fr;
-            }
-
-            .page-title {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-
-            table {
-                min-width: 900px;
-            }
-
-            .panel {
-                overflow-x: auto;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .form-group.full {
-                grid-column: 1;
-            }
-
-        }
-
-    </style>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StockDrive - Purchase Orders</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f5f7fa;
+    color:#263548;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:230px;
+    height:100vh;
+    background:#17283d;
+    color:white;
+    padding:24px 14px;
+    z-index:10;
+}
+
+.logo{
+    padding:0 12px 25px;
+    border-bottom:1px solid rgba(255,255,255,.1);
+    margin-bottom:20px;
+}
+
+.logo h2{
+    font-size:23px;
+}
+
+.logo h2 span{
+    color:#5da9e9;
+}
+
+.logo p{
+    color:#9eafc1;
+    font-size:10px;
+    letter-spacing:1px;
+    margin-top:5px;
+}
+
+.menu{
+    list-style:none;
+}
+
+.menu li{
+    margin-bottom:5px;
+}
+
+.menu a{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    text-decoration:none;
+    color:#bdc9d6;
+    padding:11px 13px;
+    border-radius:7px;
+    font-size:13px;
+    transition:.2s;
+}
+
+.menu a:hover{
+    background:#253b55;
+    color:white;
+    transform:translateX(2px);
+}
+
+.menu a.active{
+    background:#3476ad;
+    color:white;
+}
+
+.icon{
+    width:20px;
+    text-align:center;
+}
+
+.logout{
+    position:absolute;
+    bottom:25px;
+    left:14px;
+    right:14px;
+}
+
+.logout a{
+    display:block;
+    padding:11px 13px;
+    color:#bdc9d6;
+    text-decoration:none;
+    border-radius:7px;
+    font-size:13px;
+}
+
+.logout a:hover{
+    background:#253b55;
+}
+
+/* ================= MAIN ================= */
+
+.main{
+    margin-left:230px;
+    min-height:100vh;
+}
+
+/* ================= TOPBAR ================= */
+
+.topbar{
+    height:70px;
+    background:white;
+    border-bottom:1px solid #e5e9ee;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 30px;
+}
+
+.top-title h3{
+    font-size:17px;
+    color:#17283d;
+}
+
+.top-title p{
+    font-size:11px;
+    color:#8a96a3;
+    margin-top:4px;
+}
+
+.user{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    font-size:12px;
+}
+
+.user-circle{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:#3476ad;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+/* ================= CONTENT ================= */
+
+.content{
+    padding:28px 30px;
+}
+
+.heading{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:24px;
+}
+
+.heading h1{
+    font-size:26px;
+    color:#17283d;
+}
+
+.heading p{
+    color:#84909d;
+    font-size:12px;
+    margin-top:6px;
+}
+
+.add-btn{
+    border:none;
+    background:#3476ad;
+    color:white;
+    padding:11px 17px;
+    border-radius:7px;
+    cursor:pointer;
+    font-size:12px;
+    transition:.2s;
+}
+
+.add-btn:hover{
+    background:#2d6798;
+    transform:translateY(-2px);
+}
+
+/* ================= SUMMARY ================= */
+
+.summary{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:17px;
+    margin-bottom:22px;
+}
+
+.summary-card{
+    background:white;
+    border:1px solid #e4e8ed;
+    border-radius:10px;
+    padding:18px;
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+    position:relative;
+    overflow:hidden;
+}
+
+/* Blue line at the top */
+.summary-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:3px;
+    background:#3476ad;
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform .25s ease;
+}
+
+/* Hover effect */
+.summary-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 8px 20px rgba(30,50,70,.07);
+    border-color:#d7e2ec;
+}
+
+/* Show blue line */
+.summary-card:hover::before{
+    transform:scaleX(1);
+}
+
+.summary-icon{
+    width:38px;
+    height:38px;
+    background:#edf4fa;
+    color:#3476ad;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:12px;
+}
+
+.summary-card p{
+    font-size:10px;
+    color:#84909d;
+    text-transform:uppercase;
+    letter-spacing:.6px;
+}
+
+.summary-card h2{
+    margin-top:6px;
+    font-size:24px;
+    color:#17283d;
+}
+
+/* ================= TABLE PANEL ================= */
+
+.panel{
+    background:white;
+    border:1px solid #e4e8ed;
+    border-radius:10px;
+    padding:20px;
+}
+
+.panel-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+}
+
+.panel-header h3{
+    font-size:15px;
+    color:#17283d;
+}
+
+.filters{
+    display:flex;
+    gap:10px;
+}
+
+.search{
+    width:230px;
+}
+
+.search input,
+.filters select{
+    width:100%;
+    height:38px;
+    border:1px solid #dce2e8;
+    border-radius:6px;
+    padding:0 10px;
+    outline:none;
+    font-size:11px;
+}
+
+.search input:focus,
+.filters select:focus{
+    border-color:#3476ad;
+}
+
+/* ================= TABLE ================= */
+
+.table-container{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+thead{
+    background:#f8fafc;
+}
+
+th{
+    padding:12px 10px;
+    text-align:left;
+    color:#7c8793;
+    font-size:9px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+}
+
+td{
+    padding:14px 10px;
+    border-top:1px solid #edf0f3;
+    font-size:11px;
+}
+
+tbody tr{
+    transition:.15s;
+}
+
+tbody tr:hover{
+    background:#fafcff;
+}
+
+.order-number{
+    font-weight:bold;
+    color:#3476ad;
+}
+
+.amount{
+    font-weight:bold;
+    color:#263548;
+}
+
+/* ================= STATUS ================= */
+
+.status{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:12px;
+    font-size:9px;
+    font-weight:bold;
+}
+
+.status.pending{
+    background:#fff3d9;
+    color:#956814;
+}
+
+.status.approved{
+    background:#eaf3fb;
+    color:#28648f;
+}
+
+.status.completed{
+    background:#e7f5ed;
+    color:#287148;
+}
+
+.status.cancelled{
+    background:#fbeaec;
+    color:#9a3947;
+}
+
+/* ================= VIEW BUTTON ================= */
+
+.view-btn{
+    border:1px solid #dce5ed;
+    background:#f6f9fc;
+    color:#3476ad;
+    padding:6px 10px;
+    border-radius:5px;
+    cursor:pointer;
+    font-size:10px;
+}
+
+.view-btn:hover{
+    background:#edf4fa;
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(20,35,55,.55);
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+}
+
+.modal-box{
+    width:600px;
+    max-width:92%;
+    background:white;
+    border-radius:10px;
+    padding:24px;
+    animation:modalOpen .25s ease;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.modal-header h2{
+    font-size:18px;
+    color:#17283d;
+}
+
+.close{
+    border:none;
+    background:#f1f3f5;
+    width:30px;
+    height:30px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:18px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.form-group.full{
+    grid-column:1 / 3;
+}
+
+.form-group label{
+    font-size:10px;
+    font-weight:bold;
+    color:#536171;
+    margin-bottom:6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    border:1px solid #dce2e8;
+    border-radius:6px;
+    padding:10px;
+    outline:none;
+    font-size:11px;
+}
+
+.form-group textarea{
+    resize:vertical;
+    min-height:75px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+    border-color:#3476ad;
+}
+
+.modal-footer{
+    display:flex;
+    justify-content:flex-end;
+    gap:9px;
+    margin-top:20px;
+    padding-top:16px;
+    border-top:1px solid #edf0f3;
+}
+
+.cancel{
+    border:none;
+    background:#eef1f4;
+    color:#536171;
+    padding:10px 16px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.save{
+    border:none;
+    background:#3476ad;
+    color:white;
+    padding:10px 17px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+/* ================= EMPTY / LOADING ================= */
+
+.message{
+    text-align:center;
+    padding:30px;
+    color:#8995a2;
+    font-size:12px;
+}
+
+/* ================= ANIMATION ================= */
+
+@keyframes modalOpen{
+    from{
+        opacity:0;
+        transform:translateY(15px) scale(.98);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1000px){
+
+    .summary{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:700px){
+
+    .sidebar{
+        width:190px;
+    }
+
+    .main{
+        margin-left:190px;
+    }
+
+    .summary{
+        grid-template-columns:1fr;
+    }
+
+    .heading{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:12px;
+    }
+
+    .panel-header{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:12px;
+    }
+
+    .filters{
+        width:100%;
+    }
+
+    .search{
+        width:100%;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .form-group.full{
+        grid-column:1;
+    }
+
+}
+
+</style>
 </head>
 
 <body>
 
-    <!-- ================= SIDEBAR ================= -->
+<!-- ================= SIDEBAR ================= -->
 
-    <div class="sidebar">
+<div class="sidebar">
 
-        <div class="logo">
+    <div class="logo">
+        <h2>Stock<span>Drive</span></h2>
+        <p>Inventory Management</p>
+    </div>
 
-            <h2>StockDrive</h2>
+    <ul class="menu">
+
+        <li>
+            <a href="dashboard.html">
+                <span class="icon">⌂</span>
+                Dashboard
+            </a>
+        </li>
+
+        <li>
+            <a href="inventory.html">
+                <span class="icon">▣</span>
+                Inventory
+            </a>
+        </li>
+
+        <li>
+            <a href="supplier.html">
+                <span class="icon">◈</span>
+                Suppliers
+            </a>
+        </li>
+
+        <li>
+            <a href="purchaseorders.html" class="active">
+                <span class="icon">▤</span>
+                Purchase Orders
+            </a>
+        </li>
+
+        <li>
+            <a href="stockalerts.html">
+                <span class="icon">!</span>
+                Stock Alerts
+            </a>
+        </li>
+
+        <li>
+            <a href="reports.html">
+                <span class="icon">▥</span>
+                Reports
+            </a>
+        </li>
+
+        <li>
+            <a href="admin.html">
+                <span class="icon">♙</span>
+                Users
+            </a>
+        </li>
+
+    </ul>
+
+    <div class="logout">
+        <a href="login.html">
+            ↪ &nbsp; Logout
+        </a>
+    </div>
+
+</div>
+
+
+<!-- ================= MAIN ================= -->
+
+<div class="main">
+
+    <div class="topbar">
+
+        <div class="top-title">
+
+            <h3>Purchase Order Management</h3>
+
+            <p>
+                StockDrive Management System
+            </p>
 
         </div>
 
-        <ul class="menu">
+        <div class="user">
 
-            <li>
-                <a href="dashboard.html">
-                    🏠 Dashboard
-                </a>
-            </li>
+            <div class="user-circle" id="userCircle">
+                A
+            </div>
 
-            <li>
-                <a href="inventory.html">
-                    📦 Inventory
-                </a>
-            </li>
-
-            <li>
-                <a href="supplier.html">
-                    🚚 Suppliers
-                </a>
-            </li>
-
-            <li>
-                <a href="PurchaseOrders.html" class="active">
-                    🛒 Purchase Orders
-                </a>
-            </li>
-
-            <li>
-                <a href="stockalerts.html">
-                    ⚠️ Stock Alerts
-                </a>
-            </li>
-
-            <li>
-                <a href="reports.html">
-                    📊 Reports
-                </a>
-            </li>
-
-            <li>
-                <a href="admin.html">
-                    👥 Users
-                </a>
-            </li>
-
-        </ul>
-
-        <div class="logout">
-
-            <a href="index.html">
-                🚪 Logout
-            </a>
+            <span id="username">
+                Admin
+            </span>
 
         </div>
 
     </div>
 
 
-    <!-- ================= MAIN ================= -->
+    <div class="content">
 
-    <div class="main">
+        <!-- PAGE HEADING -->
 
-        <!-- TOPBAR -->
+        <div class="heading">
 
-        <div class="topbar">
+            <div>
 
-            <h2>Purchase Orders</h2>
+                <h1>Purchase Orders</h1>
 
-            <div class="profile">
+                <p>
+                    Manage supplier purchase orders and order status.
+                </p>
 
-                <div class="profile-icon">
-                    A
+            </div>
+
+            <button
+                class="add-btn"
+                onclick="openModal()"
+            >
+                + Create Purchase Order
+            </button>
+
+        </div>
+
+
+        <!-- ================= SUMMARY ================= -->
+
+        <div class="summary">
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    ▤
                 </div>
 
-                <span id="username">
-                    Admin
-                </span>
+                <p>Total Orders</p>
+
+                <h2 id="totalOrders">
+                    0
+                </h2>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    ₹
+                </div>
+
+                <p>Total Amount</p>
+
+                <h2 id="totalAmount">
+                    ₹0
+                </h2>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    ✓
+                </div>
+
+                <p>Completed</p>
+
+                <h2 id="completedOrders">
+                    0
+                </h2>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+                    !
+                </div>
+
+                <p>Pending</p>
+
+                <h2 id="pendingOrders">
+                    0
+                </h2>
 
             </div>
 
         </div>
 
 
-        <!-- CONTENT -->
+        <!-- ================= TABLE ================= -->
 
-        <div class="content">
+        <div class="panel">
 
-            <!-- PAGE TITLE -->
+            <div class="panel-header">
 
-            <div class="page-title">
+                <h3>Purchase Order List</h3>
 
-                <div>
-
-                    <h1>Purchase Orders</h1>
-
-                    <p>
-                        Create and manage supplier purchase orders.
-                    </p>
-
-                </div>
-
-                <button
-                    class="add-btn"
-                    onclick="openModal()">
-
-                    ＋ Create Purchase Order
-
-                </button>
-
-            </div>
-
-
-            <!-- ================= SUMMARY CARDS ================= -->
-
-            <div class="cards">
-
-                <div class="card">
-
-                    <div class="card-icon">
-                        🛒
-                    </div>
-
-                    <div class="card-title">
-                        Total Orders
-                    </div>
-
-                    <h2 id="totalOrders">
-                        0
-                    </h2>
-
-                </div>
-
-
-                <div class="card">
-
-                    <div class="card-icon">
-                        ⏳
-                    </div>
-
-                    <div class="card-title">
-                        Pending Orders
-                    </div>
-
-                    <h2 id="pendingOrders">
-                        0
-                    </h2>
-
-                </div>
-
-
-                <div class="card">
-
-                    <div class="card-icon">
-                        ✅
-                    </div>
-
-                    <div class="card-title">
-                        Completed Orders
-                    </div>
-
-                    <h2 id="completedOrders">
-                        0
-                    </h2>
-
-                </div>
-
-
-                <div class="card">
-
-                    <div class="card-icon">
-                        💰
-                    </div>
-
-                    <div class="card-title">
-                        Total Purchase Value
-                    </div>
-
-                    <h2 id="totalValue">
-                        ₹0
-                    </h2>
-
-                </div>
-
-            </div>
-
-
-            <!-- ================= ORDERS TABLE ================= -->
-
-            <div class="panel">
-
-                <div class="toolbar">
+                <div class="filters">
 
                     <div class="search">
 
                         <input
                             type="text"
-                            id="search"
-                            placeholder="Search order or supplier..."
-                            onkeyup="displayOrders()">
+                            id="searchInput"
+                            placeholder="Search order..."
+                            oninput="filterOrders()"
+                        >
 
                     </div>
 
-
                     <select
                         id="statusFilter"
-                        onchange="displayOrders()">
+                        onchange="filterOrders()"
+                    >
 
                         <option value="">
                             All Status
                         </option>
 
-                        <option value="Pending">
+                        <option value="PENDING">
                             Pending
                         </option>
 
-                        <option value="Approved">
+                        <option value="APPROVED">
                             Approved
                         </option>
 
-                        <option value="Completed">
+                        <option value="COMPLETED">
                             Completed
                         </option>
 
-                        <option value="Cancelled">
+                        <option value="CANCELLED">
                             Cancelled
                         </option>
 
@@ -811,6 +850,10 @@
 
                 </div>
 
+            </div>
+
+
+            <div class="table-container">
 
                 <table>
 
@@ -818,13 +861,11 @@
 
                         <tr>
 
-                            <th>Order ID</th>
+                            <th>Order Number</th>
 
                             <th>Supplier</th>
 
                             <th>Order Date</th>
-
-                            <th>Products</th>
 
                             <th>Total Amount</th>
 
@@ -836,7 +877,16 @@
 
                     </thead>
 
-                    <tbody id="orderTable">
+                    <tbody id="ordersTable">
+
+                        <tr>
+                            <td
+                                colspan="6"
+                                class="message"
+                            >
+                                Loading purchase orders...
+                            </td>
+                        </tr>
 
                     </tbody>
 
@@ -848,374 +898,427 @@
 
     </div>
 
+</div>
 
-    <!-- ================= CREATE ORDER MODAL ================= -->
 
-    <div class="modal" id="orderModal">
+<!-- ================= CREATE ORDER MODAL ================= -->
 
-        <div class="modal-box">
+<div
+    class="modal"
+    id="orderModal"
+>
 
-            <h2 id="modalTitle">
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2>
                 Create Purchase Order
             </h2>
 
+            <button
+                class="close"
+                onclick="closeModal()"
+            >
+                ×
+            </button>
 
-            <div class="form-grid">
-
-                <div class="form-group">
-
-                    <label>
-                        Supplier
-                    </label>
-
-                    <select id="supplier">
-
-                        <option value="">
-                            Select Supplier
-                        </option>
-
-                        <option>
-                            ABC Auto Parts
-                        </option>
-
-                        <option>
-                            XYZ Motors
-                        </option>
-
-                        <option>
-                            Auto Parts India
-                        </option>
-
-                        <option>
-                            Premium Car Parts
-                        </option>
-
-                    </select>
-
-                </div>
+        </div>
 
 
-                <div class="form-group">
+        <div class="form-grid">
 
-                    <label>
-                        Order Date
-                    </label>
+            <div class="form-group">
 
-                    <input
-                        type="date"
-                        id="orderDate">
+                <label>
+                    Order Number
+                </label>
 
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Product
-                    </label>
-
-                    <select id="product">
-
-                        <option value="">
-                            Select Product
-                        </option>
-
-                        <option>
-                            Brake Pad
-                        </option>
-
-                        <option>
-                            Oil Filter
-                        </option>
-
-                        <option>
-                            Air Filter
-                        </option>
-
-                        <option>
-                            Headlight
-                        </option>
-
-                        <option>
-                            Clutch Plate
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Quantity
-                    </label>
-
-                    <input
-                        type="number"
-                        id="quantity"
-                        placeholder="Enter quantity">
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Price Per Unit
-                    </label>
-
-                    <input
-                        type="number"
-                        id="price"
-                        placeholder="Enter price">
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label>
-                        Status
-                    </label>
-
-                    <select id="orderStatus">
-
-                        <option>
-                            Pending
-                        </option>
-
-                        <option>
-                            Approved
-                        </option>
-
-                        <option>
-                            Completed
-                        </option>
-
-                        <option>
-                            Cancelled
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="form-group full">
-
-                    <label>
-                        Notes
-                    </label>
-
-                    <textarea
-                        id="notes"
-                        placeholder="Additional order notes">
-                    </textarea>
-
-                </div>
+                <input
+                    type="text"
+                    id="orderNumber"
+                    placeholder="PO005"
+                >
 
             </div>
 
 
-            <div class="modal-buttons">
+            <div class="form-group">
 
-                <button
-                    class="save-btn"
-                    onclick="saveOrder()">
+                <label>
+                    Order Date
+                </label>
 
-                    Save Purchase Order
+                <input
+                    type="date"
+                    id="orderDate"
+                >
 
-                </button>
+            </div>
 
 
-                <button
-                    class="cancel-btn"
-                    onclick="closeModal()">
+            <div class="form-group">
 
-                    Cancel
+                <label>
+                    Supplier
+                </label>
 
-                </button>
+                <select id="supplierId">
+
+                    <option value="">
+                        Select Supplier
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Status
+                </label>
+
+                <select id="orderStatus">
+
+                    <option value="PENDING">
+                        Pending
+                    </option>
+
+                    <option value="APPROVED">
+                        Approved
+                    </option>
+
+                    <option value="COMPLETED">
+                        Completed
+                    </option>
+
+                    <option value="CANCELLED">
+                        Cancelled
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Total Amount
+                </label>
+
+                <input
+                    type="number"
+                    id="totalAmountInput"
+                    placeholder="25000"
+                    min="0"
+                >
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <label>
+                    Notes
+                </label>
+
+                <textarea
+                    id="notes"
+                    placeholder="Enter purchase order notes..."
+                ></textarea>
 
             </div>
 
         </div>
 
-    </div>
 
+        <div class="modal-footer">
 
-    <!-- ================= VIEW ORDER MODAL ================= -->
+            <button
+                class="cancel"
+                onclick="closeModal()"
+            >
+                Cancel
+            </button>
 
-    <div class="modal" id="viewModal">
-
-        <div class="modal-box">
-
-            <h2>
-                Purchase Order Details
-            </h2>
-
-            <div
-                class="order-details"
-                id="orderDetails"
-                style="display:block;">
-
-            </div>
-
-            <div class="modal-buttons">
-
-                <button
-                    class="cancel-btn"
-                    onclick="closeViewModal()">
-
-                    Close
-
-                </button>
-
-            </div>
+            <button
+                class="save"
+                onclick="savePurchaseOrder()"
+            >
+                Save Purchase Order
+            </button>
 
         </div>
 
     </div>
 
+</div>
 
-    <!-- ================= JAVASCRIPT ================= -->
 
-    <script>
+<script>
 
-        let orders = [
+/* ============================================
+   CONFIGURATION
+============================================ */
 
-            {
-                id: 1,
-                supplier: "ABC Auto Parts",
-                date: "2026-08-18",
-                product: "Brake Pad",
-                quantity: 50,
-                price: 750,
-                status: "Completed",
-                notes: "Regular stock replenishment"
-            },
+const API = "http://localhost:8080";
 
-            {
-                id: 2,
-                supplier: "XYZ Motors",
-                date: "2026-08-17",
-                product: "Oil Filter",
-                quantity: 100,
-                price: 250,
-                status: "Pending",
-                notes: "Required for engine section"
-            },
+let orders = [];
+let suppliers = [];
 
-            {
-                id: 3,
-                supplier: "Auto Parts India",
-                date: "2026-08-16",
-                product: "Air Filter",
-                quantity: 75,
-                price: 320,
-                status: "Approved",
-                notes: "Monthly purchase"
-            },
 
-            {
-                id: 4,
-                supplier: "Premium Car Parts",
-                date: "2026-08-15",
-                product: "Headlight",
-                quantity: 20,
-                price: 1200,
-                status: "Pending",
-                notes: "Urgent requirement"
+/* ============================================
+   USER
+============================================ */
+
+const storedUsername =
+    localStorage.getItem("username");
+
+if(storedUsername){
+
+    document.getElementById(
+        "username"
+    ).textContent = storedUsername;
+
+    document.getElementById(
+        "userCircle"
+    ).textContent =
+        storedUsername
+        .charAt(0)
+        .toUpperCase();
+
+}
+
+
+/* ============================================
+   LOAD PURCHASE ORDERS
+============================================ */
+
+async function loadOrders(){
+
+    try{
+
+        const response =
+            await fetch(
+                API + "/api/purchase-orders"
+            );
+
+        if(!response.ok){
+
+            throw new Error(
+                "Failed to load purchase orders"
+            );
+
+        }
+
+        orders =
+            await response.json();
+
+        displayOrders(orders);
+
+        updateSummary(orders);
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        document.getElementById(
+            "ordersTable"
+        ).innerHTML = `
+            <tr>
+                <td
+                    colspan="6"
+                    class="message"
+                >
+                    Unable to connect to StockDrive server.
+                </td>
+            </tr>
+        `;
+
+    }
+
+}
+
+
+/* ============================================
+   LOAD SUPPLIERS
+============================================ */
+
+async function loadSuppliers(){
+
+    try{
+
+        const response =
+            await fetch(
+                API + "/api/suppliers"
+            );
+
+        if(!response.ok){
+
+            throw new Error(
+                "Failed to load suppliers"
+            );
+
+        }
+
+        suppliers =
+            await response.json();
+
+        const select =
+            document.getElementById(
+                "supplierId"
+            );
+
+        select.innerHTML =
+            `<option value="">
+                Select Supplier
+            </option>`;
+
+        suppliers.forEach(
+            supplier => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    supplier.id;
+
+                option.textContent =
+                    supplier.supplierName ||
+                    supplier.name ||
+                    `Supplier ${supplier.id}`;
+
+                select.appendChild(
+                    option
+                );
+
             }
+        );
 
-        ];
+    }
+    catch(error){
 
+        console.error(
+            "Supplier loading error:",
+            error
+        );
 
-        let editId = null;
+    }
 
-
-        /* ================= DISPLAY ORDERS ================= */
-
-        function displayOrders() {
-
-            const search =
-                document.getElementById("search").value.toLowerCase();
-
-            const status =
-                document.getElementById("statusFilter").value;
+}
 
 
-            const filteredOrders = orders.filter(function (order) {
+/* ============================================
+   SUPPLIER NAME
+============================================ */
 
-                const matchesSearch =
-                    order.id.toString().includes(search) ||
-                    order.supplier.toLowerCase().includes(search) ||
-                    order.product.toLowerCase().includes(search);
+function getSupplierName(
+    supplierId
+){
 
-                const matchesStatus =
-                    status === "" ||
-                    order.status === status;
+    const supplier =
+        suppliers.find(
+            s =>
+                Number(s.id) ===
+                Number(supplierId)
+        );
 
-                return matchesSearch && matchesStatus;
+    if(!supplier){
 
-            });
+        return "Supplier " + supplierId;
 
+    }
 
-            const table =
-                document.getElementById("orderTable");
+    return (
+        supplier.supplierName ||
+        supplier.name ||
+        "Supplier " + supplier.id
+    );
 
-            table.innerHTML = "";
-
-
-            filteredOrders.forEach(function (order) {
-
-                const total =
-                    order.quantity * order.price;
-
-
-                let statusClass = "pending";
-
-                if (order.status === "Approved") {
-                    statusClass = "approved";
-                }
-
-                if (order.status === "Completed") {
-                    statusClass = "completed";
-                }
-
-                if (order.status === "Cancelled") {
-                    statusClass = "cancelled";
-                }
+}
 
 
-                table.innerHTML += `
+/* ============================================
+   DISPLAY ORDERS
+============================================ */
+
+function displayOrders(
+    data
+){
+
+    const table =
+        document.getElementById(
+            "ordersTable"
+        );
+
+    if(!data.length){
+
+        table.innerHTML = `
+            <tr>
+                <td
+                    colspan="6"
+                    class="message"
+                >
+                    No purchase orders found.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    table.innerHTML =
+        data.map(
+            order => {
+
+                const status =
+                    String(
+                        order.status ||
+                        "PENDING"
+                    ).toUpperCase();
+
+                return `
 
                     <tr>
 
-                        <td>
-                            PO${String(order.id).padStart(3, "0")}
+                        <td class="order-number">
+                            ${order.orderNumber || "-"}
                         </td>
 
                         <td>
-                            ${order.supplier}
+                            ${getSupplierName(
+                                order.supplierId
+                            )}
                         </td>
 
                         <td>
-                            ${formatDate(order.date)}
+                            ${formatDate(
+                                order.orderDate
+                            )}
+                        </td>
+
+                        <td class="amount">
+                            ₹${Number(
+                                order.totalAmount || 0
+                            ).toLocaleString(
+                                "en-IN"
+                            )}
                         </td>
 
                         <td>
-                            ${order.product} (${order.quantity})
-                        </td>
 
-                        <td>
-                            ₹${total.toLocaleString("en-IN")}
-                        </td>
-
-                        <td>
-
-                            <span class="status ${statusClass}">
-                                ${order.status}
+                            <span
+                                class="status ${status.toLowerCase()}"
+                            >
+                                ${status}
                             </span>
 
                         </td>
@@ -1223,27 +1326,10 @@
                         <td>
 
                             <button
-                                class="action-btn view"
-                                onclick="viewOrder(${order.id})">
-
+                                class="view-btn"
+                                onclick="viewOrder(${order.id})"
+                            >
                                 View
-
-                            </button>
-
-                            <button
-                                class="action-btn edit"
-                                onclick="editOrder(${order.id})">
-
-                                Edit
-
-                            </button>
-
-                            <button
-                                class="action-btn delete"
-                                onclick="deleteOrder(${order.id})">
-
-                                Delete
-
                             </button>
 
                         </td>
@@ -1252,397 +1338,476 @@
 
                 `;
 
-            });
+            }
+        ).join("");
 
+}
 
-            updateCards();
 
-        }
+/* ============================================
+   SUMMARY
+============================================ */
 
+function updateSummary(
+    data
+){
 
-        /* ================= UPDATE CARDS ================= */
+    document.getElementById(
+        "totalOrders"
+    ).textContent =
+        data.length;
 
-        function updateCards() {
 
-            document.getElementById("totalOrders").innerText =
-                orders.length;
+    const total =
+        data.reduce(
+            (sum,order) =>
+                sum +
+                Number(
+                    order.totalAmount || 0
+                ),
+            0
+        );
 
+    document.getElementById(
+        "totalAmount"
+    ).textContent =
+        "₹" +
+        total.toLocaleString(
+            "en-IN"
+        );
 
-            document.getElementById("pendingOrders").innerText =
-                orders.filter(function (order) {
 
-                    return order.status === "Pending";
+    const completed =
+        data.filter(
+            order =>
+                String(
+                    order.status
+                ).toUpperCase()
+                === "COMPLETED"
+        ).length;
 
-                }).length;
 
+    const pending =
+        data.filter(
+            order =>
+                String(
+                    order.status
+                ).toUpperCase()
+                === "PENDING"
+        ).length;
 
-            document.getElementById("completedOrders").innerText =
-                orders.filter(function (order) {
 
-                    return order.status === "Completed";
+    document.getElementById(
+        "completedOrders"
+    ).textContent =
+        completed;
 
-                }).length;
 
+    document.getElementById(
+        "pendingOrders"
+    ).textContent =
+        pending;
 
-            const totalValue =
-                orders.reduce(function (total, order) {
+}
 
-                    return total +
-                        (order.quantity * order.price);
 
-                }, 0);
+/* ============================================
+   FILTER
+============================================ */
 
+function filterOrders(){
 
-            document.getElementById("totalValue").innerText =
-                "₹" + totalValue.toLocaleString("en-IN");
+    const search =
+        document.getElementById(
+            "searchInput"
+        ).value
+        .toLowerCase();
 
-        }
+    const status =
+        document.getElementById(
+            "statusFilter"
+        ).value;
 
 
-        /* ================= FORMAT DATE ================= */
+    const filtered =
+        orders.filter(
+            order => {
 
-        function formatDate(date) {
+                const number =
+                    String(
+                        order.orderNumber || ""
+                    ).toLowerCase();
 
-            const d = new Date(date);
+                const supplier =
+                    getSupplierName(
+                        order.supplierId
+                    ).toLowerCase();
 
-            return d.toLocaleDateString("en-IN", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric"
-            });
 
-        }
+                const searchMatch =
+                    number.includes(search) ||
+                    supplier.includes(search);
 
 
-        /* ================= OPEN MODAL ================= */
+                const statusMatch =
+                    !status ||
+                    String(
+                        order.status || ""
+                    ).toUpperCase()
+                    === status;
 
-        function openModal() {
 
-            editId = null;
-
-            document.getElementById("modalTitle").innerText =
-                "Create Purchase Order";
-
-            clearForm();
-
-            document.getElementById("orderModal").style.display =
-                "flex";
-
-        }
-
-
-        /* ================= CLOSE MODAL ================= */
-
-        function closeModal() {
-
-            document.getElementById("orderModal").style.display =
-                "none";
-
-        }
-
-
-        /* ================= CLEAR FORM ================= */
-
-        function clearForm() {
-
-            document.getElementById("supplier").value = "";
-
-            document.getElementById("product").value = "";
-
-            document.getElementById("quantity").value = "";
-
-            document.getElementById("price").value = "";
-
-            document.getElementById("orderStatus").value =
-                "Pending";
-
-            document.getElementById("notes").value = "";
-
-            document.getElementById("orderDate").value =
-                new Date().toISOString().split("T")[0];
-
-        }
-
-
-        /* ================= SAVE ORDER ================= */
-
-        function saveOrder() {
-
-            const supplier =
-                document.getElementById("supplier").value;
-
-            const date =
-                document.getElementById("orderDate").value;
-
-            const product =
-                document.getElementById("product").value;
-
-            const quantity =
-                Number(document.getElementById("quantity").value);
-
-            const price =
-                Number(document.getElementById("price").value);
-
-            const status =
-                document.getElementById("orderStatus").value;
-
-            const notes =
-                document.getElementById("notes").value.trim();
-
-
-            if (
-                !supplier ||
-                !date ||
-                !product ||
-                quantity <= 0 ||
-                price <= 0
-            ) {
-
-                alert("Please fill all required order details.");
-
-                return;
+                return (
+                    searchMatch &&
+                    statusMatch
+                );
 
             }
+        );
 
 
-            if (editId) {
+    displayOrders(
+        filtered
+    );
 
-                const order =
-                    orders.find(function (order) {
-
-                        return order.id === editId;
-
-                    });
+}
 
 
-                order.supplier = supplier;
-                order.date = date;
-                order.product = product;
-                order.quantity = quantity;
-                order.price = price;
-                order.status = status;
-                order.notes = notes;
+/* ============================================
+   OPEN MODAL
+============================================ */
 
-            }
+function openModal(){
 
-            else {
-
-                const newId =
-                    orders.length > 0
-                        ? Math.max(
-                            ...orders.map(
-                                order => order.id
-                            )
-                        ) + 1
-                        : 1;
+    document.getElementById(
+        "orderModal"
+    ).style.display =
+        "flex";
 
 
-                orders.push({
+    document.getElementById(
+        "orderDate"
+    ).value =
+        new Date()
+        .toISOString()
+        .split("T")[0];
 
-                    id: newId,
+}
 
-                    supplier: supplier,
 
-                    date: date,
+/* ============================================
+   CLOSE MODAL
+============================================ */
 
-                    product: product,
+function closeModal(){
 
-                    quantity: quantity,
+    document.getElementById(
+        "orderModal"
+    ).style.display =
+        "none";
 
-                    price: price,
+}
 
-                    status: status,
 
-                    notes: notes
+/* ============================================
+   SAVE PURCHASE ORDER
+============================================ */
 
-                });
+async function savePurchaseOrder(){
 
-            }
+    const orderNumber =
+        document.getElementById(
+            "orderNumber"
+        ).value.trim();
 
+    const orderDate =
+        document.getElementById(
+            "orderDate"
+        ).value;
+
+    const supplierId =
+        document.getElementById(
+            "supplierId"
+        ).value;
+
+    const status =
+        document.getElementById(
+            "orderStatus"
+        ).value;
+
+    const totalAmount =
+        document.getElementById(
+            "totalAmountInput"
+        ).value;
+
+    const notes =
+        document.getElementById(
+            "notes"
+        ).value;
+
+
+    if(
+        !orderNumber ||
+        !orderDate ||
+        !supplierId ||
+        !totalAmount
+    ){
+
+        alert(
+            "Please fill all required fields."
+        );
+
+        return;
+
+    }
+
+
+    const orderData = {
+
+        orderNumber:
+            orderNumber,
+
+        supplierId:
+            Number(supplierId),
+
+        orderDate:
+            orderDate,
+
+        status:
+            status,
+
+        totalAmount:
+            Number(totalAmount),
+
+        notes:
+            notes || null
+
+    };
+
+
+    try{
+
+        const response =
+            await fetch(
+                API + "/api/purchase-orders",
+                {
+                    method:"POST",
+
+                    headers:{
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(
+                            orderData
+                        )
+                }
+            );
+
+
+        if(!response.ok){
+
+            const errorText =
+                await response.text();
+
+            throw new Error(
+                errorText ||
+                "Failed to save purchase order"
+            );
+
+        }
+
+
+        alert(
+            "Purchase Order created successfully!"
+        );
+
+
+        closeModal();
+
+        clearForm();
+
+        await loadOrders();
+
+    }
+    catch(error){
+
+        console.error(
+            error
+        );
+
+        alert(
+            "Unable to save purchase order.\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* ============================================
+   VIEW ORDER
+============================================ */
+
+function viewOrder(id){
+
+    const order =
+        orders.find(
+            item =>
+                Number(item.id) ===
+                Number(id)
+        );
+
+
+    if(!order){
+
+        return;
+
+    }
+
+
+    alert(
+
+        "Purchase Order Details\n\n" +
+
+        "Order Number: " +
+        (order.orderNumber || "-") +
+
+        "\nSupplier: " +
+        getSupplierName(
+            order.supplierId
+        ) +
+
+        "\nOrder Date: " +
+        (order.orderDate || "-") +
+
+        "\nStatus: " +
+        (order.status || "-") +
+
+        "\nTotal Amount: ₹" +
+        Number(
+            order.totalAmount || 0
+        ).toLocaleString(
+            "en-IN"
+        ) +
+
+        "\nNotes: " +
+        (order.notes || "No notes")
+
+    );
+
+}
+
+
+/* ============================================
+   CLEAR FORM
+============================================ */
+
+function clearForm(){
+
+    document.getElementById(
+        "orderNumber"
+    ).value = "";
+
+    document.getElementById(
+        "orderDate"
+    ).value = "";
+
+    document.getElementById(
+        "supplierId"
+    ).value = "";
+
+    document.getElementById(
+        "orderStatus"
+    ).value = "PENDING";
+
+    document.getElementById(
+        "totalAmountInput"
+    ).value = "";
+
+    document.getElementById(
+        "notes"
+    ).value = "";
+
+}
+
+
+/* ============================================
+   DATE FORMAT
+============================================ */
+
+function formatDate(
+    date
+){
+
+    if(!date){
+
+        return "-";
+
+    }
+
+    const d =
+        new Date(
+            date + "T00:00:00"
+        );
+
+    if(isNaN(d)){
+
+        return date;
+
+    }
+
+    return d.toLocaleDateString(
+        "en-IN",
+        {
+            day:"2-digit",
+            month:"short",
+            year:"numeric"
+        }
+    );
+
+}
+
+
+/* ============================================
+   CLOSE MODAL OUTSIDE
+============================================ */
+
+window.onclick =
+    function(event){
+
+        const modal =
+            document.getElementById(
+                "orderModal"
+            );
+
+        if(event.target === modal){
 
             closeModal();
 
-            displayOrders();
-
         }
 
+    };
 
-        /* ================= VIEW ORDER ================= */
 
-        function viewOrder(id) {
+/* ============================================
+   START
+============================================ */
 
-            const order =
-                orders.find(function (order) {
+document.addEventListener(
+    "DOMContentLoaded",
+    async function(){
 
-                    return order.id === id;
+        await loadSuppliers();
 
-                });
+        await loadOrders();
 
+    }
+);
 
-            const total =
-                order.quantity * order.price;
-
-
-            document.getElementById("orderDetails").innerHTML = `
-
-                <div class="detail-row">
-                    <strong>Order ID</strong>
-                    <span>PO${String(order.id).padStart(3, "0")}</span>
-                </div>
-
-                <div class="detail-row">
-                    <strong>Supplier</strong>
-                    <span>${order.supplier}</span>
-                </div>
-
-                <div class="detail-row">
-                    <strong>Order Date</strong>
-                    <span>${formatDate(order.date)}</span>
-                </div>
-
-                <div class="detail-row">
-                    <strong>Product</strong>
-                    <span>${order.product}</span>
-                </div>
-
-                <div class="detail-row">
-                    <strong>Quantity</strong>
-                    <span>${order.quantity}</span>
-                </div>
-
-                <div class="detail-row">
-                    <strong>Price Per Unit</strong>
-                    <span>₹${order.price.toLocaleString("en-IN")}</span>
-                </div>
-
-                <div class="detail-row">
-                    <strong>Total Amount</strong>
-                    <span>₹${total.toLocaleString("en-IN")}</span>
-                </div>
-
-                <div class="detail-row">
-                    <strong>Status</strong>
-                    <span>${order.status}</span>
-                </div>
-
-                <div class="detail-row">
-                    <strong>Notes</strong>
-                    <span>${order.notes || "No notes"}</span>
-                </div>
-
-            `;
-
-
-            document.getElementById("viewModal").style.display =
-                "flex";
-
-        }
-
-
-        /* ================= CLOSE VIEW ================= */
-
-        function closeViewModal() {
-
-            document.getElementById("viewModal").style.display =
-                "none";
-
-        }
-
-
-        /* ================= EDIT ORDER ================= */
-
-        function editOrder(id) {
-
-            const order =
-                orders.find(function (order) {
-
-                    return order.id === id;
-
-                });
-
-
-            editId = id;
-
-
-            document.getElementById("modalTitle").innerText =
-                "Edit Purchase Order";
-
-
-            document.getElementById("supplier").value =
-                order.supplier;
-
-            document.getElementById("orderDate").value =
-                order.date;
-
-            document.getElementById("product").value =
-                order.product;
-
-            document.getElementById("quantity").value =
-                order.quantity;
-
-            document.getElementById("price").value =
-                order.price;
-
-            document.getElementById("orderStatus").value =
-                order.status;
-
-            document.getElementById("notes").value =
-                order.notes;
-
-
-            document.getElementById("orderModal").style.display =
-                "flex";
-
-        }
-
-
-        /* ================= DELETE ORDER ================= */
-
-        function deleteOrder(id) {
-
-            const confirmDelete =
-                confirm(
-                    "Are you sure you want to delete this purchase order?"
-                );
-
-
-            if (confirmDelete) {
-
-                orders =
-                    orders.filter(function (order) {
-
-                        return order.id !== id;
-
-                    });
-
-
-                displayOrders();
-
-            }
-
-        }
-
-
-        /* ================= USERNAME ================= */
-
-        const savedUser =
-            localStorage.getItem("username");
-
-
-        if (savedUser) {
-
-            document.getElementById("username").innerText =
-                savedUser;
-
-        }
-
-
-        /* ================= INITIAL LOAD ================= */
-
-        displayOrders();
-
-    </script>
+</script>
 
 </body>
-
 </html>
