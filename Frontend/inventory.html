@@ -1409,73 +1409,132 @@ Save Product
    INVENTORY DATA
 ========================================= */
 
-let products = JSON.parse(
-localStorage.getItem("inventoryProducts")
-) || [
+const PRODUCTS_API = "http://localhost:8080/api/products";
 
-{
-id:"P001",
-name:"Brake Pad",
-category:"Brake System",
-brand:"Bosch",
-partNumber:"BP101",
-sellingPrice:750,
-quantity:120,
-minimumStock:20,
-description:"Front brake pad"
-},
+let products = [];
 
-{
-id:"P002",
-name:"Oil Filter",
-category:"Engine",
-brand:"Castrol",
-partNumber:"OF102",
-sellingPrice:250,
-quantity:8,
-minimumStock:15,
-description:"Premium oil filter"
-},
+let editIndex = -1;
 
-{
-id:"P003",
-name:"Air Filter",
-category:"Engine",
-brand:"Bosch",
-partNumber:"AF103",
-sellingPrice:320,
-quantity:60,
-minimumStock:10,
-description:"Automobile air filter"
-},
 
-{
-id:"P004",
-name:"Headlight",
-category:"Electrical",
-brand:"Philips",
-partNumber:"HL104",
-sellingPrice:1200,
-quantity:0,
-minimumStock:10,
-description:"LED automobile headlight"
-},
+/* =========================================
+   LOAD PRODUCTS FROM BACKEND
+========================================= */
 
-{
-id:"P005",
-name:"Clutch Plate",
-category:"Transmission",
-brand:"Exedy",
-partNumber:"CP105",
-sellingPrice:3500,
-quantity:25,
-minimumStock:5,
-description:"Automobile clutch plate"
+async function loadProductsFromBackend(){
+
+    try{
+
+        const response = await fetch(PRODUCTS_API);
+
+        if(!response.ok){
+            throw new Error("Products API returned " + response.status);
+        }
+
+        const data = await response.json();
+
+        /*
+         * Convert backend product format
+         * into the format already used by
+         * your existing Inventory UI.
+         */
+
+        products = data.map(product => ({
+
+            id: product.id,
+
+            name: product.productName,
+
+            category: product.category,
+
+            brand: product.brand,
+
+            partNumber: product.partNumber,
+
+            sellingPrice: Number(product.sellingPrice || 0),
+
+            quantity: Number(product.quantity || 0),
+
+            minimumStock: Number(product.minimumStock || 0),
+
+            supplierId: product.supplierId,
+
+            description: product.description || "",
+
+            purchasePrice: Number(product.purchasePrice || 0)
+
+        }));
+
+        console.log(
+            "StockDrive products loaded:",
+            products.length
+        );
+
+        /*
+         * Keep the backend data in localStorage
+         * so existing Add/Edit/Delete functionality
+         * continues to work with the loaded list.
+         */
+
+        localStorage.setItem(
+            "inventoryProducts",
+            JSON.stringify(products)
+        );
+
+        displayProducts();
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Unable to load products from backend:",
+            error
+        );
+
+        /*
+         * If backend is temporarily unavailable,
+         * use the existing locally saved products.
+         */
+
+        const savedProducts =
+            localStorage.getItem("inventoryProducts");
+
+        if(savedProducts){
+
+            try{
+
+                products = JSON.parse(savedProducts);
+
+                displayProducts();
+
+            }
+
+            catch(localError){
+
+                console.error(
+                    "Local inventory data is invalid:",
+                    localError
+                );
+
+                products = [];
+
+                displayProducts();
+
+            }
+
+        }
+
+        else{
+
+            products = [];
+
+            displayProducts();
+
+        }
+
+    }
+
 }
-
-];
-
-let editIndex=-1;
 
 
 /* =========================================
@@ -2034,7 +2093,7 @@ closeModal();
    INITIAL LOAD
 ========================================= */
 
-displayProducts();
+loadProductsFromBackend();
 
 </script>
 
