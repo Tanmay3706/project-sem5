@@ -36,6 +36,10 @@ public class SupplierController {
         if(supplier.getEmail()!=null&&!supplier.getEmail().isBlank()&&repository.existsByEmail(supplier.getEmail()))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already exists");
 
+        if(supplier.getStatus()==null||supplier.getStatus().isBlank())
+            supplier.setStatus("Active");
+
+        supplier.setStatus(normalizeStatus(supplier.getStatus()));
         return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(supplier));
     }
 
@@ -59,7 +63,21 @@ public class SupplierController {
         supplier.setCity(data.getCity());
         supplier.setState(data.getState());
 
+        if(data.getStatus()!=null&&!data.getStatus().isBlank()){
+            try{
+                supplier.setStatus(normalizeStatus(data.getStatus()));
+            }catch(IllegalArgumentException e){
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
+        }
+
         return ResponseEntity.ok(repository.save(supplier));
+    }
+
+    private String normalizeStatus(String status){
+        if("Active".equalsIgnoreCase(status)) return "Active";
+        if("Inactive".equalsIgnoreCase(status)) return "Inactive";
+        throw new IllegalArgumentException("Status must be Active or Inactive");
     }
 
     @DeleteMapping("/{id}")

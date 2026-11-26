@@ -10,7 +10,7 @@ public class Supplier {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable=false)
+    @Column(name="supplier_name", nullable=false)
     private String supplierName;
 
     private String contactPerson;
@@ -20,7 +20,10 @@ public class Supplier {
     private String city;
     private String state;
 
-    @Column(name="created_at",insertable=false,updatable=false)
+    @Column(nullable=false)
+    private String status = "Active";
+
+    @Column(name="created_at", insertable=false, updatable=false)
     private LocalDateTime createdAt;
 
     public Long getId(){return id;}
@@ -31,6 +34,7 @@ public class Supplier {
     public String getAddress(){return address;}
     public String getCity(){return city;}
     public String getState(){return state;}
+    public String getStatus(){return status;}
     public LocalDateTime getCreatedAt(){return createdAt;}
 
     public void setId(Long id){this.id=id;}
@@ -41,5 +45,6 @@ public class Supplier {
     public void setAddress(String address){this.address=address;}
     public void setCity(String city){this.city=city;}
     public void setState(String state){this.state=state;}
+    public void setStatus(String status){this.status=status;}
     public void setCreatedAt(LocalDateTime createdAt){this.createdAt=createdAt;}
 }

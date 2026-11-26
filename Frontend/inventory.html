@@ -951,7 +951,6 @@ padding:20px
 
 <div class="topbar-left">
 <h2>Inventory Management</h2>
-<span>StockDrive Management System</span>
 </div>
 
 <div class="profile">
@@ -980,9 +979,7 @@ Admin
 
 <h1>Inventory</h1>
 
-<p>
-Manage spare parts, stock quantities and product information.
-</p>
+
 
 </div>
 
@@ -1222,12 +1219,7 @@ Add New Product
 Product Name *
 </label>
 
-<input
-type="text"
-id="productName"
-required
-placeholder="Enter product name"
->
+<input type="text" id="productName" required placeholder="Enter product name">
 
 </div>
 
@@ -1404,697 +1396,392 @@ Save Product
 <!-- ================= JAVASCRIPT ================= -->
 
 <script>
-
-/* =========================================
-   INVENTORY DATA
-========================================= */
-
-const PRODUCTS_API = "http://localhost:8080/api/products";
-
+const API_URL = "http://localhost:8080/api/products";
 let products = [];
-
 let editIndex = -1;
+let loadingProducts = false;
 
+function normalizeCategory(value) {
+    return String(value ?? "").trim().replace(/\s+/g, " ").toLowerCase();
+}
 
-/* =========================================
-   LOAD PRODUCTS FROM BACKEND
-========================================= */
+function displayCategory(value) {
+    return String(value ?? "").trim().replace(/\s+/g, " ");
+}
 
-async function loadProductsFromBackend(){
+function escapeHTML(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
-    try{
+function getStatus(product) {
+    const quantity = Number(product.quantity) || 0;
+    const minimumStock = Number(product.minimumStock) || 0;
+    if (quantity === 0) return "Out of Stock";
+    if (quantity <= minimumStock) return "Low Stock";
+    return "In Stock";
+}
 
-        const response = await fetch(PRODUCTS_API);
+function toFrontendProduct(p) {
+    return {
+        id: p.id,
+        name: p.productName ?? p.name ?? "",
+        category: displayCategory(p.category),
+        brand: p.brand ?? "",
+        partNumber: p.partNumber ?? "",
+        sellingPrice: Number(p.sellingPrice) || 0,
+        quantity: Number(p.quantity) || 0,
+        minimumStock: Number(p.minimumStock) || 0,
+        supplierId: p.supplierId ?? null,
+        description: p.description ?? "",
+        purchasePrice: Number(p.purchasePrice) || 0
+    };
+}
 
-        if(!response.ok){
-            throw new Error("Products API returned " + response.status);
+function toBackendProduct(p) {
+    return {
+        productName: p.name,
+        category: displayCategory(p.category),
+        brand: p.brand,
+        partNumber: p.partNumber,
+        sellingPrice: Number(p.sellingPrice) || 0,
+        quantity: Number(p.quantity) || 0,
+        minimumStock: Number(p.minimumStock) || 0,
+        supplierId: p.supplierId ?? null
+    };
+}
+
+async function apiRequest(url, options = {}) {
+    const response = await fetch(url, {
+        ...options,
+        headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {})
+        }
+    });
+
+    if (!response.ok) {
+        let message = "HTTP " + response.status;
+        try {
+            const body = await response.json();
+            message = body.message || body.error || message;
+        } catch {}
+        throw new Error(message);
+    }
+
+    if (response.status === 204) return null;
+
+    const responseText = await response.text();
+    return responseText ? JSON.parse(responseText) : null;
+}
+
+async function loadProducts() {
+    if (loadingProducts) return;
+    loadingProducts = true;
+
+    const table = document.getElementById("inventoryTable");
+    if (table) {
+        table.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#8995a2">Loading products from database...</td></tr>';
+    }
+
+    try {
+        const data = await apiRequest(API_URL);
+
+        if (!Array.isArray(data)) {
+            throw new Error("The products API did not return a product list.");
         }
 
-        const data = await response.json();
+        // MySQL is the source of truth; do not use stale localStorage products.
+        products = data.map(toFrontendProduct);
 
-        /*
-         * Convert backend product format
-         * into the format already used by
-         * your existing Inventory UI.
-         */
-
-        products = data.map(product => ({
-
-            id: product.id,
-
-            name: product.productName,
-
-            category: product.category,
-
-            brand: product.brand,
-
-            partNumber: product.partNumber,
-
-            sellingPrice: Number(product.sellingPrice || 0),
-
-            quantity: Number(product.quantity || 0),
-
-            minimumStock: Number(product.minimumStock || 0),
-
-            supplierId: product.supplierId,
-
-            description: product.description || "",
-
-            purchasePrice: Number(product.purchasePrice || 0)
-
-        }));
-
-        console.log(
-            "StockDrive products loaded:",
-            products.length
-        );
-
-        /*
-         * Keep the backend data in localStorage
-         * so existing Add/Edit/Delete functionality
-         * continues to work with the loaded list.
-         */
-
-        localStorage.setItem(
-            "inventoryProducts",
-            JSON.stringify(products)
-        );
-
+        populateCategories();
         displayProducts();
+    } catch (error) {
+        console.error("Unable to load products from MySQL:", error);
+        products = [];
+        populateCategories();
 
+        if (table) {
+            table.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#b42318">Could not load products from MySQL. Start the StockDrive backend on port 8080 and refresh this page.</td></tr>';
+        }
+
+        document.getElementById("productCount").textContent = "0 Products";
+        updateStatistics();
+    } finally {
+        loadingProducts = false;
+    }
+}
+
+function populateCategories() {
+    const filter = document.getElementById("categoryFilter");
+    const formSelect = document.getElementById("category");
+
+    // Use only distinct, non-empty category values returned by MySQL.
+    const categoryMap = new Map();
+
+    products.forEach(product => {
+        const label = displayCategory(product.category);
+        const key = normalizeCategory(label);
+
+        if (key && !categoryMap.has(key)) {
+            categoryMap.set(key, label);
+        }
+    });
+
+    const categories = [...categoryMap.entries()]
+        .sort((a, b) => a[1].localeCompare(b[1]));
+
+    if (filter) {
+        const previousValue = normalizeCategory(filter.value);
+        filter.innerHTML = '<option value="all">All Categories</option>';
+
+        categories.forEach(([key, label]) => {
+            const option = document.createElement("option");
+            option.value = key;
+            option.textContent = label;
+            filter.appendChild(option);
+        });
+
+        if (categories.some(([key]) => key === previousValue)) {
+            filter.value = previousValue;
+        } else {
+            filter.value = "all";
+        }
     }
 
-    catch(error){
+    if (formSelect) {
+        const previousValue = normalizeCategory(formSelect.value);
+        formSelect.innerHTML = '<option value="">Select Category</option>';
 
-        console.error(
-            "Unable to load products from backend:",
-            error
+        categories.forEach(([, label]) => {
+            const option = document.createElement("option");
+            option.value = label;
+            option.textContent = label;
+            formSelect.appendChild(option);
+        });
+
+        const match = categories.find(
+            ([key]) => key === previousValue
         );
 
-        /*
-         * If backend is temporarily unavailable,
-         * use the existing locally saved products.
-         */
+        formSelect.value = match ? match[1] : "";
+    }
+}
 
-        const savedProducts =
-            localStorage.getItem("inventoryProducts");
+function displayProducts() {
+    const table = document.getElementById("inventoryTable");
+    if (!table) return;
 
-        if(savedProducts){
+    table.innerHTML = "";
 
-            try{
+    const search = (document.getElementById("searchInput")?.value || "")
+        .trim()
+        .toLowerCase();
 
-                products = JSON.parse(savedProducts);
+    const selectedCategory =
+        document.getElementById("categoryFilter")?.value || "all";
 
-                displayProducts();
+    const selectedStock =
+        document.getElementById("stockFilter")?.value || "all";
 
-            }
+    const filteredProducts = products.filter(product => {
+        const matchesSearch = [
+            product.name,
+            product.brand,
+            product.partNumber
+        ].some(value =>
+            String(value ?? "").toLowerCase().includes(search)
+        );
 
-            catch(localError){
+        const matchesCategory =
+            selectedCategory === "all" ||
+            normalizeCategory(product.category) ===
+                normalizeCategory(selectedCategory);
 
-                console.error(
-                    "Local inventory data is invalid:",
-                    localError
-                );
+        const matchesStock =
+            selectedStock === "all" ||
+            getStatus(product) === selectedStock;
 
-                products = [];
+        return matchesSearch && matchesCategory && matchesStock;
+    });
 
-                displayProducts();
+    if (filteredProducts.length === 0) {
+        table.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:30px;color:#8995a2">No products found in this category.</td></tr>';
+    } else {
+        filteredProducts.forEach(product => {
+            const actualIndex = products.indexOf(product);
+            const status = getStatus(product);
+            const statusClass =
+                status === "In Stock" ? "in-stock" :
+                status === "Low Stock" ? "low-stock" : "out-stock";
 
-            }
+            const row = document.createElement("tr");
+            row.style.animation = "fadeUp .3s ease forwards";
 
-        }
+            row.innerHTML = `
+                <td>${escapeHTML(product.id)}</td>
+                <td><strong class="product-name">${escapeHTML(product.name)}</strong></td>
+                <td>${escapeHTML(displayCategory(product.category))}</td>
+                <td>${escapeHTML(product.brand)}</td>
+                <td>${escapeHTML(product.partNumber)}</td>
+                <td>₹${Number(product.sellingPrice).toLocaleString("en-IN")}</td>
+                <td>${Number(product.quantity) || 0}</td>
+                <td><span class="status ${statusClass}">${status}</span></td>
+                <td>
+                    <button class="edit-btn" onclick="editProduct(${actualIndex})">Edit</button>
+                    <button class="delete-btn" onclick="deleteProduct(${actualIndex})">Delete</button>
+                </td>
+            `;
 
-        else{
-
-            products = [];
-
-            displayProducts();
-
-        }
-
+            table.appendChild(row);
+        });
     }
 
+    document.getElementById("productCount").textContent =
+        filteredProducts.length + " Products";
+
+    updateStatistics();
 }
 
+function updateStatistics() {
+    let inStock = 0;
+    let lowStock = 0;
+    let outStock = 0;
 
-/* =========================================
-   SAVE DATA
-========================================= */
+    products.forEach(product => {
+        const status = getStatus(product);
+        if (status === "In Stock") inStock++;
+        else if (status === "Low Stock") lowStock++;
+        else outStock++;
+    });
 
-function saveProducts(){
-
-localStorage.setItem(
-"inventoryProducts",
-JSON.stringify(products)
-);
-
+    document.getElementById("totalProducts").textContent = products.length;
+    document.getElementById("inStock").textContent = inStock;
+    document.getElementById("lowStock").textContent = lowStock;
+    document.getElementById("outStock").textContent = outStock;
 }
 
-
-/* =========================================
-   GET STOCK STATUS
-========================================= */
-
-function getStatus(product){
-
-if(product.quantity===0){
-return "Out of Stock";
+function openAddModal() {
+    editIndex = -1;
+    document.getElementById("modalTitle").textContent = "Add New Product";
+    document.getElementById("productForm").reset();
+    populateCategories();
+    document.getElementById("category").value = "";
+    document.getElementById("productModal").style.display = "flex";
 }
 
-if(product.quantity<=product.minimumStock){
-return "Low Stock";
+function closeModal() {
+    document.getElementById("productModal").style.display = "none";
 }
 
-return "In Stock";
+function editProduct(index) {
+    editIndex = index;
+    const product = products[index];
+    if (!product) return;
 
+    populateCategories();
+    document.getElementById("modalTitle").textContent = "Edit Product";
+    document.getElementById("productName").value = product.name || "";
+    document.getElementById("category").value = displayCategory(product.category);
+    document.getElementById("brand").value = product.brand || "";
+    document.getElementById("partNumber").value = product.partNumber || "";
+    document.getElementById("purchasePrice").value = product.purchasePrice || "";
+    document.getElementById("sellingPrice").value = product.sellingPrice || 0;
+    document.getElementById("quantity").value = product.quantity || 0;
+    document.getElementById("minimumStock").value = product.minimumStock || 0;
+    document.getElementById("description").value = product.description || "";
+    document.getElementById("productModal").style.display = "flex";
 }
 
+async function deleteProduct(index) {
+    const product = products[index];
+    if (!product) return;
 
-/* =========================================
-   DISPLAY INVENTORY
-========================================= */
+    if (!confirm("Are you sure you want to delete " + product.name + "?")) {
+        return;
+    }
 
-function displayProducts(){
+    try {
+        await apiRequest(
+            `${API_URL}/${encodeURIComponent(product.id)}`,
+            { method: "DELETE" }
+        );
+        await loadProducts();
+    } catch (error) {
+        alert("Could not delete product from MySQL: " + error.message);
+    }
+}
 
-const table=
-document.getElementById("inventoryTable");
+document.getElementById("productForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
 
-table.innerHTML="";
+    const submitButton = this.querySelector('[type="submit"]');
+    if (submitButton) submitButton.disabled = true;
 
-const search=
-document
-.getElementById("searchInput")
-.value
-.toLowerCase();
+    const existing = editIndex === -1 ? null : products[editIndex];
 
-const category=
-document
-.getElementById("categoryFilter")
-.value;
+    const productData = {
+        id: existing?.id,
+        name: document.getElementById("productName").value.trim(),
+        category: document.getElementById("category").value,
+        brand: document.getElementById("brand").value.trim(),
+        partNumber: document.getElementById("partNumber").value.trim(),
+        purchasePrice: Number(document.getElementById("purchasePrice").value) || 0,
+        sellingPrice: Number(document.getElementById("sellingPrice").value) || 0,
+        quantity: Number(document.getElementById("quantity").value) || 0,
+        minimumStock: Number(document.getElementById("minimumStock").value) || 0,
+        description: document.getElementById("description").value.trim(),
+        supplierId: existing?.supplierId ?? null
+    };
 
-const stock=
-document
-.getElementById("stockFilter")
-.value;
+    try {
+        const isEdit = editIndex !== -1;
 
-let filteredProducts=
-products.filter(product=>{
+        await apiRequest(
+            isEdit
+                ? `${API_URL}/${encodeURIComponent(existing.id)}`
+                : API_URL,
+            {
+                method: isEdit ? "PUT" : "POST",
+                body: JSON.stringify(toBackendProduct(productData))
+            }
+        );
 
-const matchesSearch=
-
-product.name
-.toLowerCase()
-.includes(search)
-
-||
-
-product.brand
-.toLowerCase()
-.includes(search)
-
-||
-
-product.partNumber
-.toLowerCase()
-.includes(search);
-
-
-const matchesCategory=
-category==="all"
-||
-product.category===category;
-
-
-const matchesStock=
-stock==="all"
-||
-getStatus(product)===stock;
-
-
-return(
-matchesSearch &&
-matchesCategory &&
-matchesStock
-);
-
+        closeModal();
+        await loadProducts();
+    } catch (error) {
+        alert("Could not save product to MySQL: " + error.message);
+    } finally {
+        if (submitButton) submitButton.disabled = false;
+    }
 });
 
+document.getElementById("searchInput").addEventListener("input", displayProducts);
+document.getElementById("categoryFilter").addEventListener("change", displayProducts);
+document.getElementById("stockFilter").addEventListener("change", displayProducts);
 
-filteredProducts.forEach(product=>{
-
-const actualIndex=
-products.indexOf(product);
-
-const status=
-getStatus(product);
-
-let statusClass="";
-
-if(status==="In Stock"){
-statusClass="in-stock";
+const username = localStorage.getItem("username");
+if (username) {
+    document.getElementById("usernameDisplay").textContent = username;
+    document.getElementById("profileIcon").textContent =
+        username.charAt(0).toUpperCase();
 }
 
-else if(status==="Low Stock"){
-statusClass="low-stock";
+function logout() {
+    localStorage.removeItem("username");
+    localStorage.removeItem("loggedInUser");
 }
 
-else{
-statusClass="out-stock";
-}
-
-const row=
-document.createElement("tr");
-
-row.style.animation=
-"fadeUp .3s ease forwards";
-
-row.innerHTML=`
-
-<td>${product.id}</td>
-
-<td>
-<strong class="product-name">
-${product.name}
-</strong>
-</td>
-
-<td>${product.category}</td>
-
-<td>${product.brand}</td>
-
-<td>${product.partNumber}</td>
-
-<td>
-₹${Number(product.sellingPrice).toLocaleString("en-IN")}
-</td>
-
-<td>${product.quantity}</td>
-
-<td>
-<span class="status ${statusClass}">
-${status}
-</span>
-</td>
-
-<td>
-
-<button
-class="edit-btn"
-onclick="editProduct(${actualIndex})"
->
-Edit
-</button>
-
-<button
-class="delete-btn"
-onclick="deleteProduct(${actualIndex})"
->
-Delete
-</button>
-
-</td>
-
-`;
-
-table.appendChild(row);
-
-});
-
-
-document.getElementById("productCount")
-.innerHTML=
-filteredProducts.length+
-" Products";
-
-updateStatistics();
-
-}
-
-
-/* =========================================
-   UPDATE STATISTICS
-========================================= */
-
-function updateStatistics(){
-
-let total=products.length;
-
-let inStock=0;
-
-let lowStock=0;
-
-let outStock=0;
-
-products.forEach(product=>{
-
-let status=getStatus(product);
-
-if(status==="In Stock"){
-inStock++;
-}
-
-else if(status==="Low Stock"){
-lowStock++;
-}
-
-else{
-outStock++;
-}
-
-});
-
-
-document.getElementById("totalProducts")
-.innerHTML=total;
-
-document.getElementById("inStock")
-.innerHTML=inStock;
-
-document.getElementById("lowStock")
-.innerHTML=lowStock;
-
-document.getElementById("outStock")
-.innerHTML=outStock;
-
-}
-
-
-/* =========================================
-   OPEN ADD PRODUCT MODAL
-========================================= */
-
-function openAddModal(){
-
-editIndex=-1;
-
-document.getElementById("modalTitle")
-.innerHTML=
-"Add New Product";
-
-document.getElementById("productForm")
-.reset();
-
-document.getElementById("productModal")
-.style.display=
-"flex";
-
-}
-
-
-/* =========================================
-   CLOSE MODAL
-========================================= */
-
-function closeModal(){
-
-document.getElementById("productModal")
-.style.display=
-"none";
-
-}
-
-
-/* =========================================
-   EDIT PRODUCT
-========================================= */
-
-function editProduct(index){
-
-editIndex=index;
-
-const product=
-products[index];
-
-document.getElementById("modalTitle")
-.innerHTML=
-"Edit Product";
-
-document.getElementById("productName")
-.value=
-product.name;
-
-document.getElementById("category")
-.value=
-product.category;
-
-document.getElementById("brand")
-.value=
-product.brand;
-
-document.getElementById("partNumber")
-.value=
-product.partNumber;
-
-document.getElementById("purchasePrice")
-.value=
-product.purchasePrice || "";
-
-document.getElementById("sellingPrice")
-.value=
-product.sellingPrice;
-
-document.getElementById("quantity")
-.value=
-product.quantity;
-
-document.getElementById("minimumStock")
-.value=
-product.minimumStock;
-
-document.getElementById("description")
-.value=
-product.description || "";
-
-document.getElementById("productModal")
-.style.display=
-"flex";
-
-}
-
-
-/* =========================================
-   DELETE PRODUCT
-========================================= */
-
-function deleteProduct(index){
-
-const product=
-products[index];
-
-const confirmDelete=
-confirm(
-"Are you sure you want to delete "+
-product.name+
-"?"
-);
-
-if(confirmDelete){
-
-products.splice(index,1);
-
-saveProducts();
-
-displayProducts();
-
-}
-
-}
-
-
-/* =========================================
-   SAVE PRODUCT FORM
-========================================= */
-
-document
-.getElementById("productForm")
-.addEventListener(
-"submit",
-function(event){
-
-event.preventDefault();
-
-const productData={
-
-id:
-editIndex===-1
-?
-"P"+
-String(products.length+1)
-.padStart(3,"0")
-:
-products[editIndex].id,
-
-name:
-document
-.getElementById("productName")
-.value
-.trim(),
-
-category:
-document
-.getElementById("category")
-.value,
-
-brand:
-document
-.getElementById("brand")
-.value
-.trim(),
-
-partNumber:
-document
-.getElementById("partNumber")
-.value
-.trim(),
-
-purchasePrice:
-Number(
-document
-.getElementById("purchasePrice")
-.value
-),
-
-sellingPrice:
-Number(
-document
-.getElementById("sellingPrice")
-.value
-),
-
-quantity:
-Number(
-document
-.getElementById("quantity")
-.value
-),
-
-minimumStock:
-Number(
-document
-.getElementById("minimumStock")
-.value
-),
-
-description:
-document
-.getElementById("description")
-.value
-.trim()
-
+window.onclick = function(event) {
+    const modal = document.getElementById("productModal");
+    if (event.target === modal) closeModal();
 };
 
-
-if(editIndex===-1){
-
-products.push(productData);
-
-}
-
-else{
-
-products[editIndex]=
-productData;
-
-}
-
-
-saveProducts();
-
-displayProducts();
-
-closeModal();
-
-}
-);
-
-
-/* =========================================
-   SEARCH
-========================================= */
-
-document
-.getElementById("searchInput")
-.addEventListener(
-"input",
-displayProducts
-);
-
-
-/* =========================================
-   CATEGORY FILTER
-========================================= */
-
-document
-.getElementById("categoryFilter")
-.addEventListener(
-"change",
-displayProducts
-);
-
-
-/* =========================================
-   STOCK FILTER
-========================================= */
-
-document
-.getElementById("stockFilter")
-.addEventListener(
-"change",
-displayProducts
-);
-
-
-/* =========================================
-   USERNAME
-========================================= */
-
-const username=
-localStorage.getItem("username");
-
-if(username){
-
-document
-.getElementById("usernameDisplay")
-.innerHTML=
-username;
-
-document
-.getElementById("profileIcon")
-.innerHTML=
-username
-.charAt(0)
-.toUpperCase();
-
-}
-
-
-/* =========================================
-   CLOSE MODAL OUTSIDE CLICK
-========================================= */
-
-window.onclick=
-function(event){
-
-const modal=
-document.getElementById(
-"productModal"
-);
-
-if(event.target===modal){
-
-closeModal();
-
-}
-
-};
-
-
-/* =========================================
-   INITIAL LOAD
-========================================= */
-
-loadProductsFromBackend();
-
+document.addEventListener("DOMContentLoaded", loadProducts);
 </script>
 
 </body>
