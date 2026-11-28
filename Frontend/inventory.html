@@ -21,7 +21,7 @@ button,input,select,textarea{
 font-family:inherit
 }
 
-/* ================= SIDEBAR ================= */
+/* SIDEBAR  */
 
 .sidebar{
 position:fixed;
@@ -120,14 +120,14 @@ color:#fff;
 transform:translateX(4px)
 }
 
-/* ================= MAIN ================= */
+/* MAIN  */
 
 .main{
 margin-left:235px;
 min-height:100vh
 }
 
-/* ================= TOPBAR ================= */
+/* TOPBAR  */
 
 .topbar{
 height:72px;
@@ -182,7 +182,7 @@ color:#394758;
 font-weight:500
 }
 
-/* ================= CONTENT ================= */
+/* CONTENT  */
 
 .content{
 padding:30px 32px 45px;
@@ -210,7 +210,7 @@ color:#7c8998;
 margin-top:7px
 }
 
-/* ================= ADD BUTTON ================= */
+/* ADD BUTTON */
 
 .add-btn{
 border:none;
@@ -234,7 +234,7 @@ box-shadow:0 9px 20px rgba(52,118,173,.24)
 transform:translateY(-1px)
 }
 
-/* ================= STATISTICS ================= */
+/* STATISTICS  */
 
 .cards{
 display:grid;
@@ -343,7 +343,7 @@ color:#a13d4b
 color:#943847
 }
 
-/* ================= FILTER ================= */
+/* FILTER  */
 
 .filter-box{
 background:#fff;
@@ -407,7 +407,7 @@ border-color:#3476ad;
 box-shadow:0 0 0 3px rgba(52,118,173,.09)
 }
 
-/* ================= TABLE ================= */
+/* TABLE  */
 
 .table-container{
 background:#fff;
@@ -490,7 +490,7 @@ font-weight:600;
 color:#26384b
 }
 
-/* ================= STATUS ================= */
+/* STATUS  */
 
 .status{
 display:inline-block;
@@ -515,7 +515,7 @@ background:#fbecee;
 color:#943847
 }
 
-/* ================= ACTION BUTTONS ================= */
+/* ACTION BUTTONS  */
 
 .edit-btn,
 .delete-btn{
@@ -550,7 +550,7 @@ box-shadow:0 4px 10px rgba(30,50,70,.08)
 transform:translateY(0)
 }
 
-/* ================= MODAL ================= */
+/* MODAL  */
 
 .modal{
 display:none;
@@ -614,7 +614,7 @@ color:#943847;
 transform:rotate(5deg)
 }
 
-/* ================= FORM ================= */
+/* FORM  */
 
 .form-grid{
 display:grid;
@@ -705,7 +705,6 @@ background:#2b6798;
 transform:translateY(-2px)
 }
 
-/* ================= ANIMATIONS ================= */
 
 @keyframes fadeDown{
 from{
@@ -756,7 +755,7 @@ from{opacity:0}
 to{opacity:1}
 }
 
-/* ================= RESPONSIVE ================= */
+/*  RESPONSIVE */
 
 @media(max-width:1100px){
 
@@ -870,7 +869,7 @@ padding:20px
 
 <body>
 
-<!-- ================= SIDEBAR ================= -->
+<!-- SIDEBAR  -->
 
 <div class="sidebar">
 
@@ -941,7 +940,7 @@ padding:20px
 
 </div>
 
-<!-- ================= MAIN ================= -->
+<!-- MAIN  -->
 
 <div class="main">
 
@@ -967,7 +966,7 @@ Admin
 
 </div>
 
-<!-- ================= CONTENT ================= -->
+<!-- CONTENT  -->
 
 <div class="content">
 
@@ -989,7 +988,7 @@ Admin
 
 </div>
 
-<!-- ================= STATISTICS ================= -->
+<!-- STATISTICS  -->
 
 <div class="cards">
 
@@ -1059,7 +1058,7 @@ Out of Stock
 
 </div>
 
-<!-- ================= FILTERS ================= -->
+<!-- FILTERS  -->
 
 <div class="filter-box">
 
@@ -1140,7 +1139,7 @@ Out of Stock
 
 </div>
 
-<!-- ================= TABLE ================= -->
+<!-- TABLE  -->
 
 <div class="table-container">
 
@@ -1191,7 +1190,7 @@ Product Inventory
 
 </div>
 
-<!-- ================= ADD/EDIT MODAL ================= -->
+<!-- ADD/EDIT MODAL  -->
 
 <div class="modal" id="productModal">
 
@@ -1393,7 +1392,7 @@ Save Product
 
 </div>
 
-<!-- ================= JAVASCRIPT ================= -->
+<!--  JAVASCRIPT -->
 
 <script>
 const API_URL = "http://localhost:8080/api/products";
@@ -1495,7 +1494,6 @@ async function loadProducts() {
             throw new Error("The products API did not return a product list.");
         }
 
-        // MySQL is the source of truth; do not use stale localStorage products.
         products = data.map(toFrontendProduct);
 
         populateCategories();
@@ -1519,8 +1517,6 @@ async function loadProducts() {
 function populateCategories() {
     const filter = document.getElementById("categoryFilter");
     const formSelect = document.getElementById("category");
-
-    // Use only distinct, non-empty category values returned by MySQL.
     const categoryMap = new Map();
 
     products.forEach(product => {
